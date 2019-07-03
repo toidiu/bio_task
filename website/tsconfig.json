@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "outDir": "./built/",
+        "sourceMap": true,
+         // this enables stricter inference for data properties on `this`
+        "strict": true,
+        "module": "ES6",
+        "moduleResolution": "node",
+        "target": "ES6",
+        "experimentalDecorators": true
+    },
+    "include": [
+        "./src/**/*"
+    ]
+}

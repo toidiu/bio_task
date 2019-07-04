@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := all
 
-APACHE_DIR=/Users/toidiu/Desktop/apache
+APACHE_DIR=/var/www
 BIO_DIR=biotask
 
 all: updateRepo releaseService releaseWebsite

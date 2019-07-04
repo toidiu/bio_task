@@ -65,24 +65,32 @@ pub fn start_server() {
 
     // TASKS===============
     let task_path = warp::path("tasks");
-    // GET -> tasks/incomplete
-    //     get incomplete (sort by date)
-    let get_incomplete_task = warp::get2()
+    // GET -> tasks/incomplete/project/:id
+    let get_incomplete_by_proj_id = warp::get2()
+        .and(task_path)
+        .and(warp::path("incomplete"))
+        .and(warp::path("project"))
+        .and(warp::path::param2::<i64>())
+        .and(warp::path::end())
+        .and(with_task_backend)
+        .and_then(tasks_server::get_incomplete_by_proj_id);
+
+    let get_all_tasks = warp::get2()
         .and(task_path)
         .and(warp::path("incomplete"))
         .and(warp::path::end())
         .and(with_task_backend)
-        .and_then(tasks_server::get_incomplete_tasks);
+        .and_then(tasks_server::get_all_tasks);
 
     // POST -> tasks
     let create_task = warp::post2()
         .and(task_path)
         .and(warp::path::end())
         // .and(warp::body::json())
-        // .and(with_task_backend)
+        .and(with_task_backend)
         .and_then(tasks_server::create_task);
 
-    let task_api = get_incomplete_task.or(create_task);
+    let task_api = get_incomplete_by_proj_id.or(get_all_tasks).or(create_task);
 
     // DEPENDENCY===============
     //     post create dependency

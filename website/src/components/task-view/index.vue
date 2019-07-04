@@ -4,6 +4,7 @@
       <loader-view class="" v-show="isLoading" :is-loading="isLoading" />
     </template>
 
+    hi
     <template>
       <nav-view />
     </template>

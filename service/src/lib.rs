@@ -8,6 +8,8 @@ extern crate serde_derive;
 extern crate serde_json;
 #[macro_use]
 extern crate slog;
+#[macro_use]
+extern crate mysql;
 
 extern crate paseto;
 

@@ -10,8 +10,7 @@ lazy_static! {
         (*ROOT).clone().new(o!("mod" => "portfolio_server"));
 }
 
-pub fn get_tasks(
-    res_tasks_backend: Result<impl backend::TasksBackend, warp::Rejection>,
+pub fn get_tasks(// res_tasks_backend: Result<impl backend::TasksBackend, warp::Rejection>,
 ) -> Result<impl warp::Reply, warp::Rejection> {
     // let port_backend = res_tasks_backend?;
     // let resp = port_backend
@@ -33,8 +32,7 @@ pub fn get_tasks(
     Ok("")
 }
 
-pub fn create_task(
-    res_tasks_backend: Result<impl backend::TasksBackend, warp::Rejection>,
+pub fn create_task(// res_tasks_backend: Result<impl backend::TasksBackend, warp::Rejection>,
 ) -> Result<impl warp::Reply, warp::Rejection> {
     // let port_backend = res_tasks_backend?;
     // let resp = port_backend

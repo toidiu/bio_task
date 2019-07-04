@@ -1,6 +1,7 @@
 .DEFAULT_GOAL := all
 
-APACHE_DIR=apache
+APACHE_DIR=/Users/toidiu/Desktop/apache
+BIO_DIR=biotask
 
 all: updateRepo releaseService releaseWebsite
 
@@ -15,8 +16,8 @@ releaseService:
 releaseWebsite:
 	cd website && \
 	npm run build && \
-	mkdir -p ${APACHE_DIR}/biotask && \
-	mv dist/* ${APACHE_DIR}/biotask
+	mkdir -p ${APACHE_DIR}/${BIO_DIR} && \
+	mv dist/* ${APACHE_DIR}/${BIO_DIR}
 
 .PHONY: webBuildAndRelease
 

@@ -1,6 +1,5 @@
 use crate::data;
 use crate::errors::*;
-use crate::global::CONFIG;
 use crate::models;
 use crate::server;
 use crate::std_ext::ExtIterator;

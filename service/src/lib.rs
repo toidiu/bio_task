@@ -12,8 +12,6 @@ extern crate slog;
 #[macro_use]
 extern crate mysql;
 
-extern crate paseto;
-
 #[macro_use]
 mod std_ext;
 mod errors;

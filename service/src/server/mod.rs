@@ -1,7 +1,7 @@
 use crate::backend;
 use crate::data;
 use crate::errors::{ErrMessage, FinError};
-use crate::global::{CONFIG, ROOT};
+use crate::global::ROOT;
 
 use http::StatusCode;
 use mysql::{Opts, OptsBuilder};
@@ -18,29 +18,16 @@ mod tasks_server;
 pub use api::*;
 
 lazy_static! {
-    // static ref CONNECTION: Arc<r2d2::Pool<r2d2_mysql::MysqlConnectionManager>> = {
-    //     let db_url =
-    //         "mysql://rusty:6VO3SaW3PwMBTcyK@192.168.2.100:3306/taskfreak".to_string();
-    //     let opts = Opts::from_url(&db_url).unwrap();
-    //     let builder = OptsBuilder::from_opts(opts);
-    //     let manager = MysqlConnectionManager::new(builder);
-    //     Arc::new(r2d2::Pool::builder().max_size(4).build(manager).unwrap())
-    // };
     // logger
     static ref LOGGER: slog::Logger =
         (*ROOT).clone().new(o!("mod" => "server"));
 }
 
 pub fn start_server() {
-    println!("Listening on http://localhost:{}", CONFIG.app.port);
-    lineInfo!(
-        LOGGER,
-        format!("Listening on http://localhost:{}", CONFIG.app.port)
-    );
-
+    println!("listening on: http://localhost:8000");
     // HEADERS
     let with_cors = warp::cors()
-        .allow_origin(CONFIG.app.cors_origin.as_str())
+        .allow_origin("http://localhost:1234")
         .allow_credentials(true)
         .allow_headers(vec!["content-type"])
         .allow_methods(vec!["GET", "POST", "DELETE", "OPTIONS"]);
@@ -100,7 +87,7 @@ pub fn start_server() {
     let api = task_api;
 
     let routes = api.recover(recover_error).with(with_cors);
-    warp::serve(routes).run(([127, 0, 0, 1], CONFIG.app.port));
+    warp::serve(routes).run(([127, 0, 0, 1], 8000));
 }
 
 fn recover_error(err: Rejection) -> Result<impl warp::Reply, warp::Rejection> {

@@ -11,7 +11,6 @@ use warp::{Filter, Rejection};
 mod api;
 mod auth;
 mod tasks_server;
-mod user_server;
 
 pub use api::*;
 pub use auth::UserId;
@@ -46,26 +45,11 @@ pub fn start_server() {
         .allow_headers(vec!["content-type"])
         .allow_methods(vec!["GET", "POST", "DELETE", "OPTIONS"]);
 
-    let with_user_backend = {
-        warp::any().map(|| match CONNECTION.get() {
-            Ok(conn) => {
-                Ok(backend::DefaultUserBackend::new(data::PgFinDb::new(
-                    conn,
-                    backend::UserBackend::get_logger_context((*LOGGER).clone()),
-                )))
-            }
-            Err(err) => {
-                error!(LOGGER, "{}: {}", line!(), err);
-                Err(warp::reject::custom(FinError::DatabaseErr))
-            }
-        })
-    };
-
     let with_task_backend = {
         warp::any().map(|| match CONNECTION.get() {
             Ok(conn) => Ok(backend::DefaultTasksBackend::new(
                 data::PgFinDb::new(
-                    conn,
+                    // conn,
                     backend::TasksBackend::get_logger_context(
                         (*LOGGER).clone(),
                     ),
@@ -79,16 +63,6 @@ pub fn start_server() {
         })
     };
 
-    // AUTH
-    let with_auth = warp::cookie::optional(&auth::SESS_COOKIE_NAME).and_then(
-        |opt_sess: Option<String>| match opt_sess {
-            Some(sess) => auth::parse_sess(&sess)
-                .map_err(|err| warp::reject::custom(FinError::NotLoggedIn)),
-            None => Err(warp::reject::custom(FinError::NotLoggedIn)),
-        },
-    );
-    let with_opt_auth = warp::cookie::optional(&auth::SESS_COOKIE_NAME);
-
     // TASKS===============
     let task_path = warp::path("tasks");
     // GET -> tasks/incomplete
@@ -98,7 +72,7 @@ pub fn start_server() {
         .and(warp::path("incomplete"))
         .and(warp::path::end())
         .and(with_task_backend)
-        .and_then(tasks_server::get_portfolio_g_list);
+        .and_then(tasks_server::get_tasks);
 
     // GET -> tasks/completed?page=0
     //     get completed (paginated)
@@ -137,8 +111,7 @@ pub fn start_server() {
     let create_task = warp::post2()
         .and(task_path)
         .and(warp::path::end())
-        .and(with_auth)
-        .and(warp::body::json())
+        // .and(warp::body::json())
         .and(with_task_backend)
         .and_then(tasks_server::create_task);
 
@@ -148,29 +121,8 @@ pub fn start_server() {
     //     post create dependency
     //     get dependency by task id
 
-    // USERS===============
-    let user_path = warp::path("users");
-    let post_login = warp::post2()
-        .and(user_path)
-        .and(warp::path("login"))
-        .and(warp::body::json())
-        .and(with_user_backend)
-        .and_then(user_server::login);
-    let post_logout = warp::post2()
-        .and(user_path)
-        .and(warp::path("logout"))
-        .and_then(user_server::logout);
-    let post_signup = warp::post2()
-        .and(user_path)
-        .and(warp::path("signup"))
-        .and(warp::body::json())
-        .and(with_user_backend)
-        .and_then(user_server::signup);
-
-    let user_api = post_login.or(post_logout).or(post_signup);
-
     // combine apis
-    let api = task_api.or(user_api);
+    let api = task_api;
 
     let routes = api.recover(recover_error).with(with_cors);
     warp::serve(routes).run(([127, 0, 0, 1], CONFIG.app.port));

@@ -22,39 +22,6 @@ macro_rules! matches(
     )
 );
 
-macro_rules! tic_id(
-    ($s:expr) => (
-        TickerId::new($s)
-    )
-);
-
-macro_rules! symbol(
-    ($s:expr) => (
-        TickerSymbol($s.to_owned())
-    )
-);
-
-macro_rules! user_id(
-    ($s:expr) => (
-        server::UserId::new($s)
-    )
-);
-
-// struct ExtIterator<I: Iterator> {
-//     underlying: I,
-// }
-
-// impl<I> Iterator for ExtIterator<I>
-// where
-//     I: Iterator,
-// {
-//     type Item = I::Item;
-
-//     fn next(&mut self) -> Option<Self::Item> {
-//         self.underlying.next()
-//     }
-// }
-
 pub struct StdExt {}
 
 impl StdExt {
@@ -95,49 +62,3 @@ where
 }
 
 impl<I: Iterator> ExtIterator for I {}
-
-#[cfg(test)]
-mod test {
-
-    use super::ExtIterator;
-    use crate::portfolio::*;
-    use crate::ticker::*;
-
-    enum TestMacro {
-        Foo,
-        Bar,
-    }
-
-    #[test]
-    fn iter_is_not_empty() {
-        let v = vec![1, 2, 3];
-        let check = v.iter().filter(|x| **x == 1).is_empty();
-        assert_eq!(check, false);
-    }
-
-    #[test]
-    fn iter_is_empty() {
-        let v = vec![1, 2, 3];
-        let check = v.iter().filter(|x| **x == 0).is_empty();
-        assert_eq!(check, true);
-    }
-
-    #[test]
-    fn symbol_should_equal() {
-        assert_eq!(TickerSymbol("bla".to_owned()), symbol!("bla"));
-    }
-
-    #[test]
-    fn should_match() {
-        let foo = TestMacro::Foo;
-        assert!(matches!(foo, TestMacro::Foo));
-        let bar = TestMacro::Bar;
-        assert!(matches!(bar, TestMacro::Bar));
-    }
-
-    #[test]
-    fn should_not_match() {
-        let foo = TestMacro::Foo;
-        assert_eq!(false, matches!(foo, TestMacro::Bar));
-    }
-}

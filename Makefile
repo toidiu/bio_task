@@ -2,7 +2,10 @@
 
 APACHE_DIR=apache
 
-all: releaseService releaseWebsite
+all: updateRepo releaseService releaseWebsite
+
+updateRepo:
+	git pull
 
 releaseService:
 	pkill "bio_task"; \
@@ -21,4 +24,4 @@ releaseWebsite:
 
 
 
-.PHONY: releaseService releaseWebsite
+.PHONY: updateRepo releaseService releaseWebsite

@@ -35,7 +35,7 @@ pub fn start_server() {
     let with_task_backend = {
         warp::any().map(|| {
             let pool = mysql::Pool::new(
-                "mysql://rusty:6VO3SaW3PwMBTcyK@192.168.2.100:3306/taskfreak",
+                "mysql://rusty:6VO3SaW3PwMBTcyK@localhost:3306/taskfreak",
             )
             .unwrap();
             Ok(backend::DefaultTasksBackend::new(

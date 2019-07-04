@@ -15,6 +15,7 @@ releaseService:
 
 releaseWebsite:
 	cd website && \
+	npm install && \
 	npm run build && \
 	mkdir -p ${APACHE_DIR}/${BIO_DIR} && \
 	mv dist/* ${APACHE_DIR}/${BIO_DIR}

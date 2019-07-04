@@ -5,3 +5,6 @@ task management
 node 11.10.0
 npm 6.7.0
 rust 1.35.0
+
+## install
+run command `make`

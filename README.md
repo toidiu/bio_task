@@ -7,4 +7,5 @@ npm 6.7.0
 rust 1.35.0
 
 ## install
-run command `make`
+get newest version: `git pull`
+run command: `make`

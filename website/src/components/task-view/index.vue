@@ -60,7 +60,15 @@ export default Vue.extend({
       /* get portfolio */
       this.isLoading = true;
       this.portState = {
-        tasks: [{ itemId: 1, projectId: 1, title: "asdf", description: "de" }]
+        tasks: [
+          { itemId: 1, projectId: 1, title: "asdf", description: "de" },
+          {
+            itemId: 2,
+            projectId: 1,
+            title: "asdfasd",
+            description: "de asdfsdf"
+          }
+        ]
       };
       //this.$appGlobal.axi
       //  .get(`portfolio/actual/${this.actualId}`)

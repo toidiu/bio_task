@@ -1,46 +1,40 @@
 <template>
   <div>
     <table class="table">
-      <tr v-for="([colName, colKey], idx) in columns" :key="idx">
-        <th>{{ colName }}</th>
-        <template v-for="(ticker, tidx) in portState.tickers">
-          <td
-            v-bind:class="[
-              colKey,
-              ticker_state(ticker),
-              ticker['kind'].toLowerCase()
-            ]"
-            :key="tidx"
-          >
-            {{ ticker[colKey] }}
-          </td>
+      <tr>
+        <template v-for="([colName, colKey], idx) in columns">
+          <th>{{ colName }}</th>
         </template>
       </tr>
+
+      <template v-for="(task, tidx) in portState.tasks">
+        <tr>
+          <template v-for="([colName, colKey], idx) in columns">
+            <td>
+              {{ task[colKey] }}
+            </td>
+          </template>
+        </tr>
+      </template>
     </table>
   </div>
 </template>
 
 <script lang="ts">
-import { FinPortfolioResp } from "./models";
-import { Ticker } from "../../data/models";
+import { TaskResp } from "./models";
 import Vue from "vue";
 
 export default Vue.extend({
   props: {
-    portState: Object as () => FinPortfolioResp
+    portState: Object as () => TaskResp
   },
   data: function() {
     return {
       columns: [
-        ["Symbol", "symbol"],
-        ["Id", "id"],
-        ["Kind", "kind"],
-        ["Fee", "fee"],
-        ["Price", "price"],
-        ["Shares", "actual_shares"],
-        ["Actual $", "actual_value"],
-        ["Goal %", "goal_percent"],
-        ["Actual %", "actual_percent"]
+        ["Id", "itemId"],
+        ["ProjectId", "projectId"],
+        ["Title", "title"],
+        ["Description", "description"]
       ]
     };
   },

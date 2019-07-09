@@ -4,7 +4,6 @@
       <loader-view class="" v-show="isLoading" :is-loading="isLoading" />
     </template>
 
-    hi
     <template>
       <nav-view />
     </template>
@@ -31,7 +30,7 @@ import LoaderView from "../LoaderView.vue";
 import ErrorsView from "../ErrorsView.vue";
 import TaskView from "./TaskView.vue";
 import router from "../../index.js";
-import { BuyNextData, BuyNextResp, FinPortfolioResp } from "./models";
+import { Task } from "./models";
 import { Ticker, Action } from "../../data/models";
 import Vue from "vue";
 
@@ -44,7 +43,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      portState: null, //FinPortfolioResp
+      portState: null, //TaskResp
       actualId: this.$route.params.id,
       isLoading: true,
       buyNextState: null, //BuyNextResp
@@ -60,16 +59,20 @@ export default Vue.extend({
       this.clearErrors();
       /* get portfolio */
       this.isLoading = true;
-      this.$appGlobal.axi
-        .get(`portfolio/actual/${this.actualId}`)
-        .then(resp => {
-          this.portState = resp.data;
-          this.isLoading = false;
-        })
-        .catch(error => {
-          this.errors.push(error.response);
-          this.isLoading = false;
-        });
+      this.portState = {
+        tasks: [{ itemId: 1, projectId: 1, title: "asdf", description: "de" }]
+      };
+      //this.$appGlobal.axi
+      //  .get(`portfolio/actual/${this.actualId}`)
+      //  .then(resp => {
+      //    this.portState = resp.data;
+      //    this.isLoading = false;
+      //  })
+      //  .catch(error => {
+      //    this.errors.push(error.response);
+      //    this.isLoading = false;
+      //  });
+      this.isLoading = false;
     },
     calcInvestmentHandler(amount: Number) {
       this.clearErrors();
@@ -92,31 +95,6 @@ export default Vue.extend({
             return;
           }
           this.buyNextState = resp.data;
-        })
-        .catch(error => {
-          this.errors.push(error.response);
-          this.isLoading = false;
-        });
-    },
-    buyNextHandler(actions: Action[]) {
-      this.clearErrors();
-      this.isLoading = true;
-
-      let data = new Object() as BuyNextData;
-      data.goal_id = parseInt(this.portState.goal_id);
-      data.port_a_id = parseInt(this.actualId);
-      data.actions = actions;
-      this.$appGlobal.axi
-        .post("portfolio/actual/buy", data)
-        // ax.post("actual/buy", {
-        //   goal_id: this.portState.goal_id,
-        //   port_a_id: this.actualId,
-        //   actions: actions
-        // })
-        .then(resp => {
-          this.portState = resp.data;
-          this.clearBuyNext();
-          this.isLoading = false;
         })
         .catch(error => {
           this.errors.push(error.response);

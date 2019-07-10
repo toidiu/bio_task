@@ -45,7 +45,7 @@ impl FinDb for PgFinDb {
         let items: ResultFin<Vec<models::Item>> = self
             .conn
             .prep_exec(
-                "SELECT itemId, title, description, projectId FROM taskfreak.frk_item WHERE itemId NOT IN (
+                "SELECT itemId, title, description, projectId, deadlineDate FROM taskfreak.frk_item WHERE itemId NOT IN (
                     SELECT DISTINCT itemId FROM taskfreak.frk_itemStatus WHERE statusKey = 5
                 )",
                 ()
@@ -54,8 +54,8 @@ impl FinDb for PgFinDb {
                 result
                     .map(|x| x.unwrap())
                     .map(|row| {
-                        let (itemId, title, description, projectId) = mysql::from_row(row);
-                        models::Item::new(itemId, title, description, projectId)
+                        let (itemId, title, description, projectId, deadlineDate) = mysql::from_row(row);
+                        models::Item::new(itemId, title, description, projectId, deadlineDate)
                     })
                     .collect() // Collect payments so now `QueryResult` is mapped to `Vec<Item>`
             })
@@ -73,15 +73,26 @@ impl FinDb for PgFinDb {
     ) -> ResultFin<Vec<models::Item>> {
         self.conn
             .prep_exec(
-                "SELECT itemId, title, description, projectId FROM frk_item WHERE projectId = :a",
+                "SELECT itemId, title, description, projectId, deadlineDate FROM frk_item WHERE projectId = :a",
                 params!{"a" => proj_id},
             )
             .map(|result| {
                 result
                     .map(|x| x.unwrap())
                     .map(|row| {
-                        let (itemId, title, description, projectId) = mysql::from_row(row);
-                        models::Item::new(itemId, title, description, projectId)
+                        // let (itemId, title, description, projectId, deadlineDate) = mysql::from_row(row);
+                        let itemId = row.get(0).unwrap();
+                        let title = row.get(1).unwrap();
+                        let description = row.get(2).unwrap();
+                        let projectId = row.get(3).unwrap();
+                        let deadlineDate = match row.get_opt(4).unwrap() {
+                            Ok(d) => d,
+                            Err(err) =>  {
+                                dbg!(err);
+                                NaiveDate::from_ymd(0000, 1, 1)
+                            }
+                        };
+                        models::Item::new(itemId, title, description, projectId, deadlineDate)
                     })
                     .collect() // Collect payments so now `QueryResult` is mapped to `Vec<Item>`
             })
@@ -94,7 +105,7 @@ impl FinDb for PgFinDb {
     fn get_all_tasks(&self) -> ResultFin<Vec<models::Item>> {
         self.conn
             .prep_exec(
-                "SELECT itemId, title, description, projectId FROM frk_item",
+                "SELECT itemId, title, description, projectId, deadlineDate FROM frk_item",
                 (),
             )
             .map(|result| {
@@ -106,9 +117,9 @@ impl FinDb for PgFinDb {
                     .map(|x| x.unwrap())
                     .map(|row| {
                         // Note that from_row will panic if you don't follow your schema
-                        let (itemId, title, description, projectId) =
+                        let (itemId, title, description, projectId, deadlineDate) =
                             mysql::from_row(row);
-                        models::Item::new(itemId, title, description, projectId)
+                        models::Item::new(itemId, title, description, projectId, deadlineDate)
                     })
                     .collect() // Collect payments so now `QueryResult` is mapped to `Vec<Item>`
             })

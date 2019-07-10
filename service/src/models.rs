@@ -1,10 +1,12 @@
+use chrono::prelude::*;
+
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Item {
     itemId: i64,
     title: String,
     description: String,
     projectId: i64,
-    // deadlineDate: time,
+    deadlineDate: NaiveDate,
     // `itemParentId` int(10) unsigned NOT NULL DEFAULT '0',
     // `priority` tinyint(3) unsigned NOT NULL DEFAULT '0',
     // `context` varchar(80) NOT NULL DEFAULT '',
@@ -21,12 +23,14 @@ impl Item {
         title: String,
         description: String,
         projectId: i64,
+        deadlineDate: NaiveDate,
     ) -> Self {
         Item {
             itemId,
             title,
             description,
             projectId,
+            deadlineDate,
         }
     }
 }

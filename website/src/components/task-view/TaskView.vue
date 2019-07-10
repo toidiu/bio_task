@@ -7,7 +7,7 @@
         </template>
       </tr>
 
-      <template v-for="(task, tidx) in portState.tasks">
+      <template v-for="(task, tidx) in tasksState">
         <tr>
           <template v-for="([colName, colKey], idx) in columns">
             <td>
@@ -26,47 +26,31 @@ import Vue from "vue";
 
 export default Vue.extend({
   props: {
-    portState: Object as () => TaskResp
+    tasksState: Array
   },
   data: function() {
     return {
       columns: [
         ["Id", "itemId"],
-        ["ProjectId", "projectId"],
         ["Title", "title"],
-        ["Description", "description"]
+        ["Description", "description"],
+        ["ProjectId", "projectId"]
       ]
     };
   },
-  methods: {
-    ticker_state: function(ticker: Ticker) {
-      var deviation = this.portState.deviation_percent;
-      return this.high_or_low(
-        ticker.goal_percent,
-        ticker.actual_percent,
-        deviation
-      );
-    },
-    high_or_low: function(goal: number, actual: number, deviation: number) {
-      var diff = goal - actual;
-      if (diff > 0 && Math.abs(diff) > deviation) {
-        return "high";
-      } else if (diff < 0 && Math.abs(diff) > deviation) {
-        return "low";
-      } else {
-        return "balance";
-      }
-    }
-  }
+  methods: {}
 });
 </script>
 
 <style lang="scss" scoped>
+table {
+  table-layout: fixed;
+}
 th,
 td {
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
   padding: 10px 10px;
   text-align: center;
   font-size: 13px;

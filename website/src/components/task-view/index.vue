@@ -13,13 +13,15 @@
     </template>
 
     <div class="bg">
-      <template>
-        <task-view
-          v-if="portState != null"
-          :port-state="portState"
-          @calc-investment-event="calcInvestmentHandler"
-        />
-      </template>
+      <scroll-view>
+        <template>
+          <task-view
+            v-if="tasksState != null"
+            :tasks-state="tasksState"
+            @calc-investment-event="calcInvestmentHandler"
+          />
+        </template>
+      </scroll-view>
     </div>
   </div>
 </template>
@@ -29,6 +31,7 @@ import NavView from "../NavView.vue";
 import LoaderView from "../LoaderView.vue";
 import ErrorsView from "../ErrorsView.vue";
 import TaskView from "./TaskView.vue";
+import ScrollView from "./ScrollView.vue";
 import router from "../../index.js";
 import { Task } from "./models";
 import { Ticker, Action } from "../../data/models";
@@ -39,11 +42,12 @@ export default Vue.extend({
     NavView,
     ErrorsView,
     LoaderView,
+    ScrollView,
     TaskView
   },
   data() {
     return {
-      portState: null, //TaskResp
+      tasksState: null, //TaskResp
       actualId: this.$route.params.id,
       isLoading: true,
       buyNextState: null, //BuyNextResp
@@ -59,59 +63,19 @@ export default Vue.extend({
       this.clearErrors();
       /* get portfolio */
       this.isLoading = true;
-      this.portState = {
-        tasks: [
-          { itemId: 1, projectId: 1, title: "asdf", description: "de" },
-          {
-            itemId: 2,
-            projectId: 1,
-            title: "asdfasd",
-            description: "de asdfsdf"
-          }
-        ]
-      };
-      //this.$appGlobal.axi
-      //  .get(`portfolio/actual/${this.actualId}`)
-      //  .then(resp => {
-      //    this.portState = resp.data;
-      //    this.isLoading = false;
-      //  })
-      //  .catch(error => {
-      //    this.errors.push(error.response);
-      //    this.isLoading = false;
-      //  });
-      this.isLoading = false;
-    },
-    calcInvestmentHandler(amount: Number) {
-      this.clearErrors();
-      this.buyNextState = null;
-      this.isLoading = true;
-      // FIXME ==========================
       this.$appGlobal.axi
-        .get(
-          `portfolio/actual/buy?goal_port_id=${
-            this.portState.goal_id
-          }&actual_port_id=${this.actualId}&amount=${amount}`
-        )
+        .get(`tasks/incomplete`)
         .then(resp => {
+          this.tasksState = resp.data;
           this.isLoading = false;
-          var actions = resp.data.actions;
-          if (!Array.isArray(actions) || !actions.length) {
-            this.errors.push(
-              "enter a higher amount to invest; unable to buy anything at this price"
-            );
-            return;
-          }
-          this.buyNextState = resp.data;
         })
         .catch(error => {
           this.errors.push(error.response);
           this.isLoading = false;
         });
+      this.isLoading = false;
     },
-    clearBuyNext() {
-      this.buyNextState = null;
-    },
+    calcInvestmentHandler(amount: Number) {},
     clearErrors() {
       this.errors = [];
     }

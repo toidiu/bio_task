@@ -7,6 +7,8 @@ use chrono::prelude::*;
 use std::collections::HashMap;
 
 pub trait TasksBackend {
+    fn get_incomplete_tasks(&self) -> ResultFin<Vec<models::Item>>;
+
     fn get_incomplete_by_proj_id(
         &self,
         proj_id: i64,
@@ -36,6 +38,10 @@ impl<T: data::FinDb> DefaultTasksBackend<T> {
 }
 
 impl<T: data::FinDb> TasksBackend for DefaultTasksBackend<T> {
+    fn get_incomplete_tasks(&self) -> ResultFin<Vec<models::Item>> {
+        self.db.get_incomplete_tasks()
+    }
+
     fn get_incomplete_by_proj_id(
         &self,
         proj_id: i64,

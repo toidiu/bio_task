@@ -44,7 +44,7 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
 table {
-  table-layout: fixed;
+  table-layout: unset;
 }
 th,
 td {
@@ -54,6 +54,9 @@ td {
   padding: 10px 10px;
   text-align: center;
   font-size: 13px;
+  min-width: 40px;
+  width: 45px;
+  max-width: 400px;
 }
 
 th {

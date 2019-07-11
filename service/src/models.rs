@@ -7,13 +7,13 @@ pub struct Item {
     description: String,
     projectId: i64,
     deadlineDate: NaiveDate,
+    memberId: i64,
     // `itemParentId` int(10) unsigned NOT NULL DEFAULT '0',
     // `priority` tinyint(3) unsigned NOT NULL DEFAULT '0',
     // `context` varchar(80) NOT NULL DEFAULT '',
     // `expectedDuration` smallint(5) unsigned NOT NULL DEFAULT '0',
     // `showInCalendar` tinyint(1) unsigned NOT NULL DEFAULT '0',
     // `showPrivate` tinyint(1) unsigned NOT NULL DEFAULT '0',
-    // `memberId` mediumint(8) unsigned NOT NULL DEFAULT '0',
     // `authorId` mediumint(8) unsigned NOT NULL DEFAULT '0',
 }
 
@@ -24,6 +24,7 @@ impl Item {
         description: String,
         projectId: i64,
         deadlineDate: NaiveDate,
+        memberId: i64,
     ) -> Self {
         Item {
             itemId,
@@ -31,6 +32,7 @@ impl Item {
             description,
             projectId,
             deadlineDate,
+            memberId,
         }
     }
 }

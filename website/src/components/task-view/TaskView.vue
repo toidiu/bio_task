@@ -34,7 +34,9 @@ export default Vue.extend({
         ["Id", "itemId"],
         ["Title", "title"],
         ["Description", "description"],
-        ["ProjectId", "projectId"]
+        ["ProjectId", "projectId"],
+        ["Deadline", "deadlineDate"],
+        ["MemberId", "memberId"]
       ]
     };
   },

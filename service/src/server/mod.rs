@@ -27,7 +27,7 @@ pub fn start_server() {
     println!("listening on: http://localhost:8000");
     // HEADERS
     let with_cors = warp::cors()
-        .allow_origin("http://localhost:1234")
+        .allow_origin("http://home.biopony.de")
         .allow_credentials(true)
         .allow_headers(vec!["content-type"])
         .allow_methods(vec!["GET", "POST", "DELETE", "OPTIONS"]);

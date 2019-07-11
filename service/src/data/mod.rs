@@ -134,7 +134,7 @@ fn row_to_item(row: mysql::Row) -> models::Item {
         Ok(d) => d,
         Err(err) => {
             dbg!(err);
-            NaiveDate::from_ymd(0000, 1, 1)
+            NaiveDate::from_ymd(9999, 1, 1)
         }
     };
     let memberId = row.get(5).unwrap();

@@ -1,16 +1,55 @@
+use chrono::prelude::*;
+
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Item {
     itemId: i64,
     title: String,
     description: String,
+    projectId: i64,
+    deadlineDate: NaiveDate,
+    memberId: i64,
+    // `itemParentId` int(10) unsigned NOT NULL DEFAULT '0',
+    // `priority` tinyint(3) unsigned NOT NULL DEFAULT '0',
+    // `context` varchar(80) NOT NULL DEFAULT '',
+    // `expectedDuration` smallint(5) unsigned NOT NULL DEFAULT '0',
+    // `showInCalendar` tinyint(1) unsigned NOT NULL DEFAULT '0',
+    // `showPrivate` tinyint(1) unsigned NOT NULL DEFAULT '0',
+    // `authorId` mediumint(8) unsigned NOT NULL DEFAULT '0',
 }
 
 impl Item {
-    pub fn new(itemId: i64, title: String, description: String) -> Self {
+    pub fn new(
+        itemId: i64,
+        title: String,
+        description: String,
+        projectId: i64,
+        deadlineDate: NaiveDate,
+        memberId: i64,
+    ) -> Self {
         Item {
-            itemId: itemId,
-            title: title,
-            description: description,
+            itemId,
+            title,
+            description,
+            projectId,
+            deadlineDate,
+            memberId,
+        }
+    }
+}
+
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Project {
+    projectId: i64,
+    name: String,
+    description: String,
+}
+
+impl Project {
+    pub fn new(projectId: i64, name: String, description: String) -> Self {
+        Project {
+            projectId,
+            name,
+            description,
         }
     }
 }

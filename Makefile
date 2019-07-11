@@ -3,7 +3,7 @@
 APACHE_DIR=/var/www
 BIO_DIR=biotask
 
-all: updateRepo releaseService releaseWebsite
+all: releaseService releaseWebsite
 
 updateRepo:
 	git pull

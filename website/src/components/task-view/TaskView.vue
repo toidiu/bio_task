@@ -1,81 +1,64 @@
 <template>
   <div>
     <table class="table">
-      <tr v-for="([colName, colKey], idx) in columns" :key="idx">
-        <th>{{ colName }}</th>
-        <template v-for="(ticker, tidx) in portState.tickers">
-          <td
-            v-bind:class="[
-              colKey,
-              ticker_state(ticker),
-              ticker['kind'].toLowerCase()
-            ]"
-            :key="tidx"
-          >
-            {{ ticker[colKey] }}
-          </td>
+      <tr>
+        <template v-for="([colName, colKey], idx) in columns">
+          <th>{{ colName }}</th>
         </template>
       </tr>
+
+      <template v-for="(task, tidx) in tasksState">
+        <tr>
+          <template v-for="([colName, colKey], idx) in columns">
+            <td>
+              {{ task[colKey] }}
+            </td>
+          </template>
+        </tr>
+      </template>
     </table>
   </div>
 </template>
 
 <script lang="ts">
-import { FinPortfolioResp } from "./models";
-import { Ticker } from "../../data/models";
+import { TaskResp } from "./models";
 import Vue from "vue";
 
 export default Vue.extend({
   props: {
-    portState: Object as () => FinPortfolioResp
+    tasksState: Array
   },
   data: function() {
     return {
       columns: [
-        ["Symbol", "symbol"],
-        ["Id", "id"],
-        ["Kind", "kind"],
-        ["Fee", "fee"],
-        ["Price", "price"],
-        ["Shares", "actual_shares"],
-        ["Actual $", "actual_value"],
-        ["Goal %", "goal_percent"],
-        ["Actual %", "actual_percent"]
+        ["Id", "itemId"],
+        ["Title", "title"],
+        ["Description", "description"],
+        ["ProjectId", "projectId"],
+        ["Deadline", "deadlineDate"],
+        ["MemberId", "memberId"]
       ]
     };
   },
-  methods: {
-    ticker_state: function(ticker: Ticker) {
-      var deviation = this.portState.deviation_percent;
-      return this.high_or_low(
-        ticker.goal_percent,
-        ticker.actual_percent,
-        deviation
-      );
-    },
-    high_or_low: function(goal: number, actual: number, deviation: number) {
-      var diff = goal - actual;
-      if (diff > 0 && Math.abs(diff) > deviation) {
-        return "high";
-      } else if (diff < 0 && Math.abs(diff) > deviation) {
-        return "low";
-      } else {
-        return "balance";
-      }
-    }
-  }
+  methods: {}
 });
 </script>
 
 <style lang="scss" scoped>
+table {
+  table-layout: unset;
+}
 th,
 td {
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
   padding: 10px 10px;
   text-align: center;
   font-size: 13px;
+  min-width: 40px;
+  width: 45px;
+  max-width: 400px;
 }
 
 th {

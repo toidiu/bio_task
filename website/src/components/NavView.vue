@@ -6,7 +6,11 @@
   >
     <div class="navbar-brand ">
       <a class="navbar-item" v-on:click="goToDash">
-        <img src="./../../static/images/fin-logo.png" width="112" height="28" />
+        <img
+          src="./../../static/images/biotask-logo.png"
+          width="112"
+          height="28"
+        />
       </a>
     </div>
 
@@ -78,4 +82,8 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.navbar img {
+  height: 50px;
+}
+</style>

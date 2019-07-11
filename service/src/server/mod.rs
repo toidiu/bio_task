@@ -28,6 +28,7 @@ pub fn start_server() {
     // HEADERS
     let with_cors = warp::cors()
         .allow_origin("http://home.biopony.de")
+        .allow_origin("http://localhost:1234")
         .allow_credentials(true)
         .allow_headers(vec!["content-type"])
         .allow_methods(vec!["GET", "POST", "DELETE", "OPTIONS"]);

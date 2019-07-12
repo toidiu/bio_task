@@ -5,9 +5,9 @@ pub struct Item {
     itemId: i64,
     title: String,
     description: String,
-    projectId: i64,
+    projectTitle: String,
     deadlineDate: NaiveDate,
-    memberId: i64,
+    memberName: String,
     // `itemParentId` int(10) unsigned NOT NULL DEFAULT '0',
     // `priority` tinyint(3) unsigned NOT NULL DEFAULT '0',
     // `context` varchar(80) NOT NULL DEFAULT '',
@@ -22,17 +22,17 @@ impl Item {
         itemId: i64,
         title: String,
         description: String,
-        projectId: i64,
+        projectTitle: String,
         deadlineDate: NaiveDate,
-        memberId: i64,
+        memberName: String,
     ) -> Self {
         Item {
             itemId,
             title,
             description,
-            projectId,
+            projectTitle,
             deadlineDate,
-            memberId,
+            memberName,
         }
     }
 }

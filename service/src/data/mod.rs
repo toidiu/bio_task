@@ -41,10 +41,14 @@ impl FinDb for PgFinDb {
         let items: ResultFin<Vec<models::Item>> = self
             .conn
             .prep_exec(
-                "SELECT itemId, title, description, projectId, deadlineDate, memberId FROM taskfreak.frk_item
-                WHERE itemId NOT IN (
-                    SELECT DISTINCT itemId FROM taskfreak.frk_itemStatus WHERE statusKey = 5
-                ) ORDER BY deadlineDate",
+                "SELECT it.itemId, it.title, it.description, pj.name, it.deadlineDate, mem.firstname FROM taskfreak.frk_item it
+                JOIN taskfreak.frk_project pj ON (it.projectId = pj.projectId)
+                JOIN taskfreak.frk_member mem ON (it.memberId = mem.memberId)
+                WHERE itemId NOT IN (SELECT DISTINCT itemId FROM taskfreak.frk_itemStatus WHERE statusKey = 5) ORDER BY deadlineDate",
+                // "SELECT itemId, title, description, projectId, deadlineDate, memberId FROM taskfreak.frk_item
+                // WHERE itemId NOT IN (
+                //     SELECT DISTINCT itemId FROM taskfreak.frk_itemStatus WHERE statusKey = 5
+                // ) ORDER BY deadlineDate",
                 ()
             )
             .map(|result| {

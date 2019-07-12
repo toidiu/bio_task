@@ -39,11 +39,11 @@ export default Vue.extend({
     return {
       columns: [
         ["Id", "itemId"],
+        ["Deadline", "deadlineDate"],
         ["Title", "title"],
         ["Description", "description"],
-        ["ProjectId", "projectId"],
-        ["Deadline", "deadlineDate"],
-        ["MemberId", "memberId"]
+        //["Project Title", "projectTitle"],
+        ["Member Name", "memberName"]
       ],
       currentSort: "deadlineDate",
       currentSortDir: "asc"

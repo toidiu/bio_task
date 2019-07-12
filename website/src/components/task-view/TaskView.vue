@@ -1,16 +1,15 @@
 <template>
   <div>
-    <div>debug: sort={{ currentSort }}, dir={{ currentSortDir }}</div>
     <table class="table">
       <tr>
         <template v-for="([colName, colKey], idx) in columns">
           <th @click="sort(colKey)">
-            <div class="sort-wrapper">
-              <img class="sort-img" src="./../../../static/images/sort.svg" />
-              <div class="sort-text">
+            <a class="sort-wrapper">
+              <img class="sort-img" :src="getSortImgUrl(colKey)" />
+              <div class="sort-text" :class="getSortTextColor(colKey)">
                 {{ colName }}
               </div>
-            </div>
+            </a>
           </th>
         </template>
       </tr>
@@ -57,6 +56,26 @@ export default Vue.extend({
         this.currentSortDir = this.currentSortDir === "asc" ? "desc" : "asc";
       }
       this.currentSort = s;
+    },
+    getSortImgUrl: function(s) {
+      console.log(s);
+      if (this.currentSort === s) {
+        if (this.currentSortDir === "asc") {
+          return require("./../../../static/images/sort-up.svg");
+        } else if (this.currentSortDir === "desc") {
+          return require("./../../../static/images/sort-down.svg");
+        }
+      } else {
+        return require("./../../../static/images/sort.svg");
+      }
+    },
+    getSortTextColor: function(s) {
+      console.log(s);
+      if (this.currentSort === s) {
+        return "active";
+      } else {
+        return "";
+      }
     }
   },
   computed: {
@@ -74,15 +93,21 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-div {
+.sort-wrapper {
   display: ruby;
 }
 .sort-img {
   width: 14px;
   height: auto;
   vertical-align: middle;
+  margin-bottom: 2px;
 }
 .sort-text {
+  color: black;
+  font-size: 1.2em;
+  &.active {
+    color: #078484;
+  }
 }
 table {
   table-layout: unset;

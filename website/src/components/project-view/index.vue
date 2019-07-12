@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <template>
       <loader-view class="" v-show="isLoading" :is-loading="isLoading" />
     </template>
@@ -12,12 +12,16 @@
       <errors-view :errors="errors" v-show="errors.length" />
     </template>
 
-    <div class="bg" v-if="portListState != null">
-      <dash-view
-        :port-list-state="portListState"
-        @go_to_portfolio="goToPortfolioHandler"
-        @add_portfolio="addPortfolioHandler"
-      />
+    <div class="bg">
+      <scroll-view>
+        <template>
+          <task-view
+            v-if="tasksState != null"
+            :tasks-state="tasksState"
+            @calc-investment-event="calcInvestmentHandler"
+          />
+        </template>
+      </scroll-view>
     </div>
   </div>
 </template>
@@ -26,9 +30,11 @@
 import NavView from "../NavView.vue";
 import LoaderView from "../LoaderView.vue";
 import ErrorsView from "../ErrorsView.vue";
-import DashView from "./DashView.vue";
+import TaskView from "./TaskView.vue";
+import ScrollView from "./ScrollView.vue";
 import router from "../../index.js";
-import { Ticker, PortfolioGoalList } from "../../data/models";
+import { Task } from "./models";
+import { Ticker, Action } from "../../data/models";
 import Vue from "vue";
 
 export default Vue.extend({
@@ -36,45 +42,40 @@ export default Vue.extend({
     NavView,
     ErrorsView,
     LoaderView,
-    DashView
+    ScrollView,
+    TaskView
   },
   data() {
     return {
-      portListState: null, //PortfolioGoalList[]
+      tasksState: null, //TaskResp
+      actualId: this.$route.params.id,
       isLoading: true,
       buyNextState: null, //BuyNextResp
       errors: [] as String[]
     };
   },
   mounted() {
-    this.getPortfolioList();
+    this.getPortfolio();
+    console.log();
   },
   methods: {
-    getPortfolioList() {
+    getPortfolio() {
       this.clearErrors();
-      /* get portfolio list */
+      /* get portfolio */
       this.isLoading = true;
       this.$appGlobal.axi
-        .get("portfolio/actual")
+        .get(`tasks/incomplete`)
         .then(resp => {
-          if (resp != undefined) {
-            this.portListState = resp.data;
-          } else {
-            this.errors.push("oops,looks like we made a mistake");
-          }
+          this.tasksState = resp.data;
           this.isLoading = false;
         })
         .catch(error => {
           this.errors.push(error.response);
           this.isLoading = false;
         });
+      this.isLoading = false;
     },
-    goToPortfolioHandler(id) {
-      router.push({ name: "portfolio", params: { id: id } });
-    },
-    addPortfolioHandler() {
-      router.push({ name: "portAdd" });
-    },
+    calcInvestmentHandler(amount: Number) {},
     clearErrors() {
       this.errors = [];
     }

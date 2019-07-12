@@ -5,21 +5,19 @@
     aria-label="main navigation"
   >
     <div class="navbar-brand ">
-      <a class="navbar-item" v-on:click="goToDash">
-        <img src="./../../static/images/fin-logo.png" width="112" height="28" />
+      <a class="navbar-item" v-on:click="goToHome">
+        <img
+          src="./../../static/images/biotask-logo.png"
+          width="112"
+          height="28"
+        />
       </a>
     </div>
 
     <div class="level-right">
-      <router-link to="/dash">
-        <a class="navbar-item">dash</a>
+      <router-link to="/">
+        <a class="navbar-item">home</a>
       </router-link>
-      <router-link v-if="isUserAuth" to="/login">
-        <a class="navbar-item">login</a>
-      </router-link>
-      <a class="navbar-item" href="#" v-if="!isUserAuth" v-on:click="logout"
-        >logout</a
-      >
     </div>
   </nav>
 </template>
@@ -67,8 +65,8 @@ export default Vue.extend({
       this.$appGlobal.axi.post("users/logout").catch(error => {});
       router.push({ name: "login" });
     },
-    goToDash() {
-      if (this.$router.currentRoute.name == "dash") {
+    goToHome() {
+      if (this.$router.currentRoute.name == "home") {
         this.$router.go(0);
       } else {
         router.push({ name: "dash" });

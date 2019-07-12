@@ -3,11 +3,18 @@
     <table class="table">
       <tr>
         <template v-for="([colName, colKey], idx) in columns">
-          <th>{{ colName }}</th>
+          <th @click="sort(colKey)">
+            <a class="sort-wrapper">
+              <img class="sort-img" :src="getSortImgUrl(colKey)" />
+              <div class="sort-text" :class="getSortTextColor(colKey)">
+                {{ colName }}
+              </div>
+            </a>
+          </th>
         </template>
       </tr>
 
-      <template v-for="(task, tidx) in tasksState">
+      <template v-for="(task, tidx) in sortedTasksState">
         <tr>
           <template v-for="([colName, colKey], idx) in columns">
             <td>
@@ -37,14 +44,71 @@ export default Vue.extend({
         ["ProjectId", "projectId"],
         ["Deadline", "deadlineDate"],
         ["MemberId", "memberId"]
-      ]
+      ],
+      currentSort: "deadlineDate",
+      currentSortDir: "asc"
     };
   },
-  methods: {}
+  methods: {
+    sort: function(s) {
+      //if s == current sort, reverse
+      if (s === this.currentSort) {
+        this.currentSortDir = this.currentSortDir === "asc" ? "desc" : "asc";
+      }
+      this.currentSort = s;
+    },
+    getSortImgUrl: function(s) {
+      console.log(s);
+      if (this.currentSort === s) {
+        if (this.currentSortDir === "asc") {
+          return require("./../../../static/images/sort-up.svg");
+        } else if (this.currentSortDir === "desc") {
+          return require("./../../../static/images/sort-down.svg");
+        }
+      } else {
+        return require("./../../../static/images/sort.svg");
+      }
+    },
+    getSortTextColor: function(s) {
+      console.log(s);
+      if (this.currentSort === s) {
+        return "active";
+      } else {
+        return "";
+      }
+    }
+  },
+  computed: {
+    sortedTasksState: function() {
+      return this.tasksState.sort((a, b) => {
+        let modifier = 1;
+        if (this.currentSortDir === "desc") modifier = -1;
+        if (a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
+        if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
+        return 0;
+      });
+    }
+  }
 });
 </script>
 
 <style lang="scss" scoped>
+.sort-wrapper {
+  display: ruby;
+}
+.sort-img {
+  width: 14px;
+  height: auto;
+  vertical-align: middle;
+  margin-bottom: 2px;
+}
+.sort-text {
+  color: black;
+  font-size: 1.2em;
+  &.active {
+    color: #078484;
+  }
+}
 table {
   table-layout: unset;
 }

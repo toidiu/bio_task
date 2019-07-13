@@ -18,7 +18,7 @@ pub trait FinDb {
 
     fn get_all_tasks(&self) -> ResultFin<Vec<models::Item>>;
 
-    //========== TASKS
+    //========== PROJECTS
     fn get_all_projects(&self) -> ResultFin<Vec<models::Project>>;
 }
 

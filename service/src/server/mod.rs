@@ -59,6 +59,8 @@ pub fn start_server() {
         .and(with_backend)
         .and_then(projects_server::get_all_projects);
 
+    let project_api = get_projects;
+
     // TASKS===============
     let task_path = warp::path("tasks");
     // GET -> tasks/incomplete/project/:id
@@ -103,7 +105,7 @@ pub fn start_server() {
     //     get dependency by task id
 
     // combine apis
-    let api = task_api;
+    let api = task_api.or(project_api);
 
     let routes = api.recover(recover_error).with(with_cors);
     warp::serve(routes).run(([127, 0, 0, 1], 8000));

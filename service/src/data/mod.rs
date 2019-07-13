@@ -37,14 +37,19 @@ impl PgFinDb {
 }
 
 impl FinDb for PgFinDb {
+    //FIXME add status key and remove projectTitle
     fn get_incomplete_tasks(&self) -> ResultFin<Vec<models::Item>> {
         let items: ResultFin<Vec<models::Item>> = self
             .conn
             .prep_exec(
-                "SELECT it.itemId, it.title, it.description, pj.name, it.deadlineDate, mem.firstname FROM taskfreak.frk_item it
-                JOIN taskfreak.frk_project pj ON (it.projectId = pj.projectId)
+                "SELECT it.itemId, it.title, it.description, max(iss.statusKey),
+                    it.deadlineDate, mem.firstname FROM taskfreak.frk_item it
                 JOIN taskfreak.frk_member mem ON (it.memberId = mem.memberId)
-                WHERE itemId NOT IN (SELECT DISTINCT itemId FROM taskfreak.frk_itemStatus WHERE statusKey = 5) ORDER BY deadlineDate",
+                JOIN taskfreak.frk_itemStatus iss ON (it.itemId = iss.itemId)
+                WHERE it.itemId NOT IN
+                    (SELECT DISTINCT itemId FROM taskfreak.frk_itemStatus WHERE statusKey = 5)
+                GROUP BY it.itemId
+                ORDER BY deadlineDate",
                 // "SELECT itemId, title, description, projectId, deadlineDate, memberId FROM taskfreak.frk_item
                 // WHERE itemId NOT IN (
                 //     SELECT DISTINCT itemId FROM taskfreak.frk_itemStatus WHERE statusKey = 5

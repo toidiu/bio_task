@@ -18,7 +18,17 @@
         <tr>
           <template v-for="([colName, colKey], idx) in columns">
             <td>
-              {{ task[colKey] }}
+              <div v-if="colKey === 'statusKey'">
+                <progress
+                  class="progress is-primary"
+                  :value="task[colKey]"
+                  max="5"
+                  >15%</progress
+                >
+              </div>
+              <div v-else>
+                {{ task[colKey] }}
+              </div>
             </td>
           </template>
         </tr>
@@ -38,15 +48,17 @@ export default Vue.extend({
   data: function() {
     return {
       columns: [
-        ["Id", "itemId"],
-        ["Deadline", "deadlineDate"],
         ["Title", "title"],
+        ["Deadline", "deadlineDate"],
         ["Description", "description"],
-        //["Project Title", "projectTitle"],
-        ["Member Name", "memberName"]
+        ["Status", "statusKey"],
+        ["Member Name", "memberName"],
+        ["Id", "itemId"]
       ],
       currentSort: "deadlineDate",
-      currentSortDir: "asc"
+      currentSortDir: "asc",
+      max: 5,
+      value: 3
     };
   },
   methods: {

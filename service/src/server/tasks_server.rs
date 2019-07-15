@@ -10,9 +10,9 @@ lazy_static! {
 }
 
 pub fn get_incomplete_tasks(
-    res_tasks_backend: Result<impl backend::TasksBackend, warp::Rejection>,
+    res_backend: Result<impl backend::Backend, warp::Rejection>,
 ) -> Result<impl warp::Reply, warp::Rejection> {
-    let task_backend = res_tasks_backend?;
+    let task_backend = res_backend?;
     let resp = task_backend.get_incomplete_tasks().map_err(|err| {
         lineError!(LOGGER, err);
         warp::reject::custom(FinError::ServerErr)
@@ -25,46 +25,10 @@ pub fn get_incomplete_tasks(
     Ok(reply)
 }
 
-pub fn get_incomplete_by_proj_id(
-    proj_id: i64,
-    res_tasks_backend: Result<impl backend::TasksBackend, warp::Rejection>,
-) -> Result<impl warp::Reply, warp::Rejection> {
-    let task_backend = res_tasks_backend?;
-    let resp =
-        task_backend
-            .get_incomplete_by_proj_id(proj_id)
-            .map_err(|err| {
-                lineError!(LOGGER, err);
-                warp::reject::custom(FinError::ServerErr)
-            })?;
-
-    let reply = serde_json::to_string(&resp).map_err(|err| {
-        lineError!(LOGGER, err);
-        warp::reject::custom(err)
-    })?;
-    Ok(reply)
-}
-
-pub fn get_all_tasks(
-    res_tasks_backend: Result<impl backend::TasksBackend, warp::Rejection>,
-) -> Result<impl warp::Reply, warp::Rejection> {
-    let task_backend = res_tasks_backend?;
-    let resp = task_backend.get_all_tasks().map_err(|err| {
-        lineError!(LOGGER, err);
-        warp::reject::custom(FinError::ServerErr)
-    })?;
-
-    let reply = serde_json::to_string(&resp).map_err(|err| {
-        lineError!(LOGGER, err);
-        warp::reject::custom(err)
-    })?;
-    Ok(reply)
-}
-
 pub fn create_task(
-    res_tasks_backend: Result<impl backend::TasksBackend, warp::Rejection>,
+    res_backend: Result<impl backend::Backend, warp::Rejection>,
 ) -> Result<impl warp::Reply, warp::Rejection> {
-    // let task_backend = res_tasks_backend?;
+    // let task_backend = res_backend?;
     // let resp = task_backend
     //     .create_port_a(&user_id, &data.goal_id, &data.stock_percent)
     //     .map_err(|err| {

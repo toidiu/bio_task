@@ -15,9 +15,9 @@
     </div>
 
     <div class="level-right">
-      <router-link to="/">
-        <a class="navbar-item">home</a>
-      </router-link>
+      <!-- <router-link to="/"> -->
+      <!--   <a class="navbar-item">home</a> -->
+      <!-- </router-link> -->
     </div>
   </nav>
 </template>

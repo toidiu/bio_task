@@ -9,13 +9,6 @@ use std::collections::HashMap;
 pub trait Backend {
     fn get_incomplete_tasks(&self) -> ResultFin<Vec<models::Item>>;
 
-    fn get_incomplete_by_proj_id(
-        &self,
-        proj_id: i64,
-    ) -> ResultFin<Vec<models::Item>>;
-
-    fn get_all_tasks(&self) -> ResultFin<Vec<models::Item>>;
-
     fn get_all_projects(&self) -> ResultFin<Vec<models::Project>>;
 }
 
@@ -42,17 +35,6 @@ impl<T: data::FinDb> DefaultBackend<T> {
 impl<T: data::FinDb> Backend for DefaultBackend<T> {
     fn get_incomplete_tasks(&self) -> ResultFin<Vec<models::Item>> {
         self.db.get_incomplete_tasks()
-    }
-
-    fn get_incomplete_by_proj_id(
-        &self,
-        proj_id: i64,
-    ) -> ResultFin<Vec<models::Item>> {
-        self.db.get_incomplete_by_proj_id(proj_id)
-    }
-
-    fn get_all_tasks(&self) -> ResultFin<Vec<models::Item>> {
-        self.db.get_all_tasks()
     }
 
     fn get_all_projects(&self) -> ResultFin<Vec<models::Project>> {

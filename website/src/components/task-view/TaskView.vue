@@ -1,5 +1,7 @@
 <template>
   <div>
+    <b-progress :value="value" :max="max" class="mb-3"></b-progress>
+
     <table class="table">
       <tr>
         <template v-for="([colName, colKey], idx) in columns">
@@ -42,11 +44,13 @@ export default Vue.extend({
         ["Deadline", "deadlineDate"],
         ["Title", "title"],
         ["Description", "description"],
-        //["Project Title", "projectTitle"],
+        ["Status", "statusKey"],
         ["Member Name", "memberName"]
       ],
       currentSort: "deadlineDate",
-      currentSortDir: "asc"
+      currentSortDir: "asc",
+      max: 5,
+      value: 3
     };
   },
   methods: {

@@ -25,42 +25,6 @@ pub fn get_incomplete_tasks(
     Ok(reply)
 }
 
-pub fn get_incomplete_by_proj_id(
-    proj_id: i64,
-    res_backend: Result<impl backend::Backend, warp::Rejection>,
-) -> Result<impl warp::Reply, warp::Rejection> {
-    let task_backend = res_backend?;
-    let resp =
-        task_backend
-            .get_incomplete_by_proj_id(proj_id)
-            .map_err(|err| {
-                lineError!(LOGGER, err);
-                warp::reject::custom(FinError::ServerErr)
-            })?;
-
-    let reply = serde_json::to_string(&resp).map_err(|err| {
-        lineError!(LOGGER, err);
-        warp::reject::custom(err)
-    })?;
-    Ok(reply)
-}
-
-pub fn get_all_tasks(
-    res_backend: Result<impl backend::Backend, warp::Rejection>,
-) -> Result<impl warp::Reply, warp::Rejection> {
-    let task_backend = res_backend?;
-    let resp = task_backend.get_all_tasks().map_err(|err| {
-        lineError!(LOGGER, err);
-        warp::reject::custom(FinError::ServerErr)
-    })?;
-
-    let reply = serde_json::to_string(&resp).map_err(|err| {
-        lineError!(LOGGER, err);
-        warp::reject::custom(err)
-    })?;
-    Ok(reply)
-}
-
 pub fn create_task(
     res_backend: Result<impl backend::Backend, warp::Rejection>,
 ) -> Result<impl warp::Reply, warp::Rejection> {

@@ -11,13 +11,6 @@ pub trait FinDb {
     //========== TASKS
     fn get_incomplete_tasks(&self) -> ResultFin<Vec<models::Item>>;
 
-    fn get_incomplete_by_proj_id(
-        &self,
-        proj_id: i64,
-    ) -> ResultFin<Vec<models::Item>>;
-
-    fn get_all_tasks(&self) -> ResultFin<Vec<models::Item>>;
-
     //========== PROJECTS
     fn get_all_projects(&self) -> ResultFin<Vec<models::Project>>;
 }
@@ -37,23 +30,18 @@ impl PgFinDb {
 }
 
 impl FinDb for PgFinDb {
-    //FIXME add status key and remove projectTitle
     fn get_incomplete_tasks(&self) -> ResultFin<Vec<models::Item>> {
         let items: ResultFin<Vec<models::Item>> = self
             .conn
             .prep_exec(
                 "SELECT it.itemId, it.title, it.description, max(iss.statusKey),
-                    it.deadlineDate, mem.firstname FROM taskfreak.frk_item it
-                JOIN taskfreak.frk_member mem ON (it.memberId = mem.memberId)
-                JOIN taskfreak.frk_itemStatus iss ON (it.itemId = iss.itemId)
+                    it.deadlineDate, mem.firstname FROM frk_item it
+                JOIN frk_member mem ON (it.memberId = mem.memberId)
+                JOIN frk_itemStatus iss ON (it.itemId = iss.itemId)
                 WHERE it.itemId NOT IN
-                    (SELECT DISTINCT itemId FROM taskfreak.frk_itemStatus WHERE statusKey = 5)
+                    (SELECT DISTINCT itemId FROM frk_itemStatus WHERE statusKey = 5)
                 GROUP BY it.itemId
                 ORDER BY deadlineDate",
-                // "SELECT itemId, title, description, projectId, deadlineDate, memberId FROM taskfreak.frk_item
-                // WHERE itemId NOT IN (
-                //     SELECT DISTINCT itemId FROM taskfreak.frk_itemStatus WHERE statusKey = 5
-                // ) ORDER BY deadlineDate",
                 ()
             )
             .map(|result| {
@@ -68,47 +56,6 @@ impl FinDb for PgFinDb {
             });
 
         items
-    }
-
-    fn get_incomplete_by_proj_id(
-        &self,
-        proj_id: i64,
-    ) -> ResultFin<Vec<models::Item>> {
-        self.conn
-            .prep_exec(
-                "SELECT itemId, title, description, projectId, deadlineDate, memberId FROM frk_item
-                WHERE projectId = :a ORDER BY deadlineDate",
-                params!{"a" => proj_id},
-            )
-            .map(|result| {
-                result
-                    .map(|x| x.unwrap())
-                    .map(row_to_item)
-                    .collect()
-            })
-            .map_err(|err| {
-                lineError!(self.logger, err);
-                FinError::DatabaseErr
-            })
-    }
-
-    fn get_all_tasks(&self) -> ResultFin<Vec<models::Item>> {
-        self.conn
-            .prep_exec(
-                "SELECT itemId, title, description, projectId, deadlineDate, memberId FROM frk_item
-                ORDER BY deadlineDate",
-                (),
-            )
-            .map(|result| {
-                result
-                    .map(|x| x.unwrap())
-                    .map(row_to_item)
-                    .collect() // Collect payments so now `QueryResult` is mapped to `Vec<Item>`
-            })
-            .map_err(|err| {
-                lineError!(self.logger, err);
-                FinError::DatabaseErr
-            })
     }
 
     fn get_all_projects(&self) -> ResultFin<Vec<models::Project>> {
@@ -138,7 +85,7 @@ fn row_to_item(row: mysql::Row) -> models::Item {
     let itemId = row.get(0).unwrap();
     let title = row.get(1).unwrap();
     let description = row.get(2).unwrap();
-    let projectId = row.get(3).unwrap();
+    let statusKey = row.get(3).unwrap();
     let deadlineDate = match row.get_opt(4).unwrap() {
         Ok(d) => d,
         Err(err) => {
@@ -151,7 +98,7 @@ fn row_to_item(row: mysql::Row) -> models::Item {
         itemId,
         title,
         description,
-        projectId,
+        statusKey,
         deadlineDate,
         memberId,
     )

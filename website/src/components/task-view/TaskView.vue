@@ -1,7 +1,5 @@
 <template>
   <div>
-    <b-progress :value="value" :max="max" class="mb-3"></b-progress>
-
     <table class="table">
       <tr>
         <template v-for="([colName, colKey], idx) in columns">
@@ -20,7 +18,17 @@
         <tr>
           <template v-for="([colName, colKey], idx) in columns">
             <td>
-              {{ task[colKey] }}
+              <div v-if="colKey === 'statusKey'">
+                <progress
+                  class="progress is-primary"
+                  :value="task[colKey]"
+                  max="5"
+                  >15%</progress
+                >
+              </div>
+              <div v-else>
+                {{ task[colKey] }}
+              </div>
             </td>
           </template>
         </tr>
@@ -40,12 +48,12 @@ export default Vue.extend({
   data: function() {
     return {
       columns: [
-        ["Id", "itemId"],
-        ["Deadline", "deadlineDate"],
         ["Title", "title"],
+        ["Deadline", "deadlineDate"],
         ["Description", "description"],
         ["Status", "statusKey"],
-        ["Member Name", "memberName"]
+        ["Member Name", "memberName"],
+        ["Id", "itemId"]
       ],
       currentSort: "deadlineDate",
       currentSortDir: "asc",

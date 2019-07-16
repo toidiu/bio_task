@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg">
     <div>
       <button class="button is-dark is-pulled-left" @click="prevPage">
         Previous

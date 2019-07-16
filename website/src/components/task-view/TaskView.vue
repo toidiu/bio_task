@@ -1,15 +1,29 @@
 <template>
   <div class="bg">
     <div>
-      <button class="button is-dark is-pulled-left" @click="prevPage">
+      <button
+        class="button is-dark is-pulled-left is-outlined"
+        @click="prevPage"
+      >
         Previous
       </button>
-      <button class="button is-dark is-pulled-right" @click="nextPage">
+      <button
+        class="button is-dark is-pulled-right is-outlined"
+        @click="nextPage"
+      >
         Next
       </button>
     </div>
-    <br />
-    <br />
+
+    <div class="columns is-mobile is-centered has-text-centered">
+      <div class="column is-half">
+        <p class="bd-notification is-primary">
+          <span class="has-text-weight-bold">{{ currentPage }}</span> of
+          <span>{{ totalPages }}</span>
+          <br />
+        </p>
+      </div>
+    </div>
 
     <scroll-view>
       <table class="table">
@@ -54,10 +68,16 @@
     </scroll-view>
 
     <div class="bottom-button-wrapper">
-      <button class="button is-dark is-pulled-left" @click="prevPage">
+      <button
+        class="button is-dark is-pulled-left is-outlined"
+        @click="prevPage"
+      >
         Previous
       </button>
-      <button class="button is-dark is-pulled-right" @click="nextPage">
+      <button
+        class="button is-dark is-pulled-right is-outlined"
+        @click="nextPage"
+      >
         Next
       </button>
     </div>
@@ -90,8 +110,12 @@ export default Vue.extend({
       max: 5,
       value: 3,
       pageSize: 25,
-      currentPage: 1
+      currentPage: 1,
+      totalPages: 0
     };
+  },
+  created: function() {
+    this.totalPages = Math.ceil(this.tasksState.length / this.pageSize);
   },
   methods: {
     sort: function(s) {

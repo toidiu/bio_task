@@ -1,52 +1,78 @@
 <template>
   <div>
-    <table class="table">
-      <tr>
-        <template v-for="([colName, colKey], idx) in columns">
-          <th @click="sort(colKey)">
-            <a class="sort-wrapper">
-              <img class="sort-img" :src="getSortImgUrl(colKey)" />
-              <div class="sort-text" :class="getSortTextColor(colKey)">
-                {{ colName }}
-              </div>
-            </a>
-          </th>
-        </template>
-      </tr>
+    <div>
+      <button class="button is-dark is-pulled-left" @click="prevPage">
+        Previous
+      </button>
+      <button class="button is-dark is-pulled-right" @click="nextPage">
+        Next
+      </button>
+    </div>
+    <br />
+    <br />
 
-      <template v-for="(task, tidx) in sortedTasksState">
+    <scroll-view>
+      <table class="table">
         <tr>
           <template v-for="([colName, colKey], idx) in columns">
-            <td>
-              <div v-if="colKey === 'statusKey'">
-                <div class="progress-wrapper">
-                  <progress
-                    class="progress is-primary"
-                    :value="task[colKey]"
-                    max="5"
-                    >15%</progress
-                  >
-                  <p class="progress-value has-text-black">
-                    {{ getPercent(task[colKey]) }}
-                  </p>
+            <th @click="sort(colKey)">
+              <a class="sort-wrapper">
+                <img class="sort-img" :src="getSortImgUrl(colKey)" />
+                <div class="sort-text" :class="getSortTextColor(colKey)">
+                  {{ colName }}
                 </div>
-              </div>
-              <div v-else>
-                {{ task[colKey] }}
-              </div>
-            </td>
+              </a>
+            </th>
           </template>
         </tr>
-      </template>
-    </table>
+
+        <template v-for="(task, tidx) in sortedTasksState">
+          <tr>
+            <template v-for="([colName, colKey], idx) in columns">
+              <td>
+                <div v-if="colKey === 'statusKey'">
+                  <div class="progress-wrapper">
+                    <progress
+                      class="progress is-primary"
+                      :value="task[colKey]"
+                      max="5"
+                      >15%</progress
+                    >
+                    <p class="progress-value has-text-black">
+                      {{ getPercent(task[colKey]) }}
+                    </p>
+                  </div>
+                </div>
+                <div v-else>
+                  {{ task[colKey] }}
+                </div>
+              </td>
+            </template>
+          </tr>
+        </template>
+      </table>
+    </scroll-view>
+
+    <div class="bottom-button-wrapper">
+      <button class="button is-dark is-pulled-left" @click="prevPage">
+        Previous
+      </button>
+      <button class="button is-dark is-pulled-right" @click="nextPage">
+        Next
+      </button>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { TaskResp } from "./models";
 import Vue from "vue";
+import ScrollView from "./ScrollView.vue";
 
 export default Vue.extend({
+  components: {
+    ScrollView
+  },
   props: {
     tasksState: Array
   },
@@ -62,7 +88,9 @@ export default Vue.extend({
       currentSort: "deadlineDate",
       currentSortDir: "asc",
       max: 5,
-      value: 3
+      value: 3,
+      pageSize: 25,
+      currentPage: 1
     };
   },
   methods: {
@@ -72,6 +100,13 @@ export default Vue.extend({
         this.currentSortDir = this.currentSortDir === "asc" ? "desc" : "asc";
       }
       this.currentSort = s;
+    },
+    nextPage: function() {
+      if (this.currentPage * this.pageSize < this.tasksState.length)
+        this.currentPage++;
+    },
+    prevPage: function() {
+      if (this.currentPage > 1) this.currentPage--;
     },
     getPercent: function(v) {
       return (v / 5) * 100 + "%";
@@ -99,13 +134,19 @@ export default Vue.extend({
   },
   computed: {
     sortedTasksState: function() {
-      return this.tasksState.sort((a, b) => {
-        let modifier = 1;
-        if (this.currentSortDir === "desc") modifier = -1;
-        if (a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
-        if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
-        return 0;
-      });
+      return this.tasksState
+        .sort((a, b) => {
+          let modifier = 1;
+          if (this.currentSortDir === "desc") modifier = -1;
+          if (a[this.currentSort] < b[this.currentSort]) return -1 * modifier;
+          if (a[this.currentSort] > b[this.currentSort]) return 1 * modifier;
+          return 0;
+        })
+        .filter((row, index) => {
+          let start = (this.currentPage - 1) * this.pageSize;
+          let end = this.currentPage * this.pageSize;
+          if (index >= start && index < end) return true;
+        });
     }
   }
 });
@@ -142,6 +183,9 @@ export default Vue.extend({
 }
 .progress {
   border-radius: 2px;
+}
+.bottom-button-wrapper {
+  margin-bottom: 60px;
 }
 .sort-wrapper {
   display: ruby;

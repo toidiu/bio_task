@@ -12,17 +12,13 @@
       <errors-view :errors="errors" v-show="errors.length" />
     </template>
 
-    <div class="bg">
-      <scroll-view>
-        <template>
-          <task-view
-            v-if="tasksState != null"
-            :tasks-state="tasksState"
-            @calc-investment-event="calcInvestmentHandler"
-          />
-        </template>
-      </scroll-view>
-    </div>
+    <template>
+      <task-view
+        v-if="tasksState != null"
+        :tasks-state="tasksState"
+        @calc-investment-event="calcInvestmentHandler"
+      />
+    </template>
   </div>
 </template>
 
@@ -31,7 +27,6 @@ import NavView from "../NavView.vue";
 import LoaderView from "../LoaderView.vue";
 import ErrorsView from "../ErrorsView.vue";
 import TaskView from "./TaskView.vue";
-import ScrollView from "./ScrollView.vue";
 import router from "../../index.js";
 import { Task } from "./models";
 import { Ticker, Action } from "../../data/models";
@@ -42,7 +37,6 @@ export default Vue.extend({
     NavView,
     ErrorsView,
     LoaderView,
-    ScrollView,
     TaskView
   },
   data() {

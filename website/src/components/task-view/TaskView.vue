@@ -36,8 +36,8 @@
                       class="progress is-primary"
                       :value="task[colKey]"
                       max="5"
-                      >15%</progress
-                    >
+                      >{{ task[colKey] }}
+                    </progress>
                     <p class="progress-value has-text-black">
                       {{ getPercent(task[colKey]) }}
                     </p>

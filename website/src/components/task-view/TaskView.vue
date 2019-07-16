@@ -19,12 +19,17 @@
           <template v-for="([colName, colKey], idx) in columns">
             <td>
               <div v-if="colKey === 'statusKey'">
-                <progress
-                  class="progress is-primary"
-                  :value="task[colKey]"
-                  max="5"
-                  >15%</progress
-                >
+                <div class="progress-wrapper">
+                  <progress
+                    class="progress is-primary"
+                    :value="task[colKey]"
+                    max="5"
+                    >15%</progress
+                  >
+                  <p class="progress-value has-text-black">
+                    {{ getPercent(task[colKey]) }}
+                  </p>
+                </div>
               </div>
               <div v-else>
                 {{ task[colKey] }}
@@ -52,8 +57,7 @@ export default Vue.extend({
         ["Deadline", "deadlineDate"],
         ["Description", "description"],
         ["Status", "statusKey"],
-        ["Member Name", "memberName"],
-        ["Id", "itemId"]
+        ["Member Name", "memberName"]
       ],
       currentSort: "deadlineDate",
       currentSortDir: "asc",
@@ -68,6 +72,9 @@ export default Vue.extend({
         this.currentSortDir = this.currentSortDir === "asc" ? "desc" : "asc";
       }
       this.currentSort = s;
+    },
+    getPercent: function(v) {
+      return (v / 5) * 100 + "%";
     },
     getSortImgUrl: function(s) {
       console.log(s);
@@ -105,6 +112,37 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
+.progress-wrapper {
+  position: relative;
+}
+
+.progress-value {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: calc(1rem / 1.5);
+  line-height: 1rem;
+  font-weight: bold;
+}
+
+.progress.is-small + .progress-value {
+  font-size: calc(0.75rem / 1.5);
+  line-height: 0.75rem;
+}
+
+.progress.is-medium + .progress-value {
+  font-size: calc(1.25rem / 1.5);
+  line-height: 1.25rem;
+}
+
+.progress.is-large + .progress-value {
+  font-size: calc(1.5rem / 1.5);
+  line-height: 1.5rem;
+}
+.progress {
+  border-radius: 2px;
+}
 .sort-wrapper {
   display: ruby;
 }

@@ -14,7 +14,7 @@ pub struct LoginForm {
 }
 
 #[derive(Deserialize)]
-pub struct UserData {
+pub struct UserDataApi {
     pub id: i64,
     pub email: String,
 }

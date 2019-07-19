@@ -1,15 +1,13 @@
-use crate::data;
-use crate::global::{CONFIG, ROOT};
 use http::{self, Response, StatusCode};
 
 use crate::errors::{self, FinError, ResultFin};
+use crate::global::{CONFIG, ROOT};
 use chrono::prelude::*;
 
 pub const SESS_COOKIE_NAME: &str = "sess";
 
 lazy_static! {
-    static ref SECRET_KEY: Vec<u8> =
-        Vec::from(CONFIG.app.paseto_token.as_bytes());
+    static ref SECRET_KEY: Vec<u8> = Vec::from(CONFIG.paseto_token.as_bytes());
     static ref LOGGER: slog::Logger = (*ROOT).clone().new(o!("mod" => "auth"));
 }
 
@@ -56,13 +54,12 @@ pub fn parse_sess(sess: &str) -> ResultFin<UserId> {
 
 //FIXME dont user expect
 pub fn resp_with_auth(
-    user_data: data::UserData,
+    user_data: super::UserDataApi,
     body: String,
     status: StatusCode,
 ) -> Result<Response<String>, warp::Rejection> {
     let curr = Utc::now();
-    let expire =
-        curr + chrono::Duration::minutes(CONFIG.app.paseto_timeout_min);
+    let expire = curr + chrono::Duration::minutes(CONFIG.paseto_timeout_min);
 
     let token = paseto::tokens::PasetoBuilder::new()
         .set_encryption_key(SECRET_KEY.to_vec())

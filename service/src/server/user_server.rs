@@ -1,15 +1,9 @@
 use super::auth;
 use crate::backend;
-use crate::global::ROOT;
 use crate::server;
 use libpasta;
 
 use http::{self, Response, StatusCode};
-
-lazy_static! {
-    static ref LOGGER: slog::Logger =
-        (*ROOT).clone().new(o!("mod" => "user_server"));
-}
 
 pub fn login(
     data: server::LoginForm,
@@ -25,7 +19,7 @@ pub fn login(
         &user_with_pass.password,
         &data.password,
     )) {
-        Some(server::UserData {
+        Some(server::UserDataApi {
             id: user_with_pass.id,
             email: user_with_pass.email,
         })
@@ -87,6 +81,10 @@ pub fn signup(
             .create_user(&data.email, &hash_pass)
             .map_err(warp::reject::custom)?;
 
-        auth::resp_with_auth(new_user, "".to_string(), StatusCode::CREATED)
+        let new_user_api = super::UserDataApi {
+            id: new_user.id,
+            email: new_user.email,
+        };
+        auth::resp_with_auth(new_user_api, "".to_string(), StatusCode::CREATED)
     }
 }

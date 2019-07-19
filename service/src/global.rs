@@ -13,5 +13,26 @@ lazy_static! {
 
 
     };
+    pub static ref CONFIG: AppConfig = {
+        get_config()
+    };
 
+}
+
+#[derive(Deserialize, Debug)]
+pub struct AppConfig {
+    pub paseto_timeout_min: i64,
+    pub password: String,
+    pub paseto_token: String,
+}
+
+fn get_config() -> AppConfig {
+    let contents = fs::read_to_string("local.password.toml")
+        .expect("Something went wrong reading the file");
+
+    let config: AppConfig = toml::from_str(&contents).expect(
+        "please add a password file at root of server
+                project 'local.password.toml'",
+    );
+    config
 }

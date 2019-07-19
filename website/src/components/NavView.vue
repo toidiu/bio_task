@@ -8,7 +8,7 @@
       <a class="navbar-item" v-on:click="goToHome">
         <img
           src="./../../static/images/biotask-logo.png"
-          width="112"
+          width="84"
           height="28"
         />
       </a>

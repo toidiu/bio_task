@@ -5,7 +5,6 @@ use crate::global::ROOT;
 
 use http::StatusCode;
 use mysql::{Opts, OptsBuilder};
-use r2d2_mysql::MysqlConnectionManager;
 use serde_derive::Deserialize;
 use std::env;
 use std::fs;
@@ -16,6 +15,7 @@ use toml::Value;
 use warp::{Filter, Rejection};
 
 mod api;
+mod auth;
 mod tasks_server;
 mod user_server;
 
@@ -25,12 +25,13 @@ lazy_static! {
     // logger
     static ref LOGGER: slog::Logger =
         (*ROOT).clone().new(o!("mod" => "server"));
+    static ref CONNECTION: mysql::Pool = {
+            mysql::Pool::new(MY_SQL_URL).unwrap()
+    };
 }
 
-#[derive(Deserialize, Debug)]
-struct AppConfig {
-    password: String,
-}
+const MY_SQL_URL: &str =
+    "mysql://rusty:6VO3SaW3PwMBTcyK@localhost:3306/taskfreak";
 
 pub fn start_server() {
     println!("listening on: http://localhost:8000");
@@ -42,13 +43,11 @@ pub fn start_server() {
         .allow_headers(vec!["content-type"])
         .allow_methods(vec!["GET", "POST", "DELETE", "OPTIONS"]);
 
-    let my_sql_url = "mysql://rusty:6VO3SaW3PwMBTcyK@localhost:3306/taskfreak";
     let with_tasks_backend = {
         warp::any().map(|| {
-            let pool = mysql::Pool::new(my_sql_url).unwrap();
             Ok(backend::DefaultTasksBackend::new(
                 data::PgFinDb::new(
-                    pool,
+                    CONNECTION.clone(),
                     backend::TasksBackend::get_logger_context(
                         (*LOGGER).clone(),
                     ),
@@ -60,24 +59,23 @@ pub fn start_server() {
 
     let with_user_backend = {
         warp::any().map(|| {
-            let pool = mysql::Pool::new(my_sql_url).unwrap();
             Ok(backend::DefaultUserBackend::new(data::PgFinDb::new(
-                pool,
+                CONNECTION.clone(),
                 backend::UserBackend::get_logger_context((*LOGGER).clone()),
             )))
         })
     };
 
     // PROJECTS===============
-    let project_path = warp::path("projects");
-    // GET -> projects
-    let get_projects = warp::get2()
-        .and(project_path)
-        .and(warp::path::end())
-        .and(with_tasks_backend)
-        .and_then(projects_server::get_all_projects);
+    // let project_path = warp::path("projects");
+    // // GET -> projects
+    // let get_projects = warp::get2()
+    //     .and(project_path)
+    //     .and(warp::path::end())
+    //     .and(with_tasks_backend)
+    //     .and_then(projects_server::get_all_projects);
 
-    let project_api = get_projects;
+    // let project_api = get_projects;
 
     // TASKS===============
     let task_path = warp::path("tasks");
@@ -118,21 +116,12 @@ pub fn start_server() {
     let user_api = post_login.or(post_logout).or(post_signup);
 
     // combine apis
-    let api = task_api.or(project_api).or(user_api);
+    let api = task_api
+        // .or(project_api)
+        .or(user_api);
 
     let routes = api.recover(recover_error).with(with_cors);
     warp::serve(routes).run(([127, 0, 0, 1], 8000));
-}
-
-fn get_local_password() -> String {
-    let contents = fs::read_to_string("local.password.toml")
-        .expect("Something went wrong reading the file");
-
-    let config: AppConfig = toml::from_str(&contents).expect(
-        "please add a password file at root of server
-                project 'local.password.toml'",
-    );
-    config.password
 }
 
 fn recover_error(err: Rejection) -> Result<impl warp::Reply, warp::Rejection> {

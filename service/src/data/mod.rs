@@ -1,3 +1,5 @@
+mod db_types;
+
 use crate::backend;
 use crate::errors::{FinError, ResultFin};
 use crate::models;
@@ -7,7 +9,25 @@ use std::collections::HashMap;
 
 use r2d2;
 
+pub(crate) use self::db_types::*;
+
 pub trait FinDb {
+    //========== USER
+    fn get_user(&self, email: &str) -> ResultFin<db_types::UserData>;
+
+    fn get_user_with_pass(
+        &self,
+        email: &str,
+    ) -> ResultFin<db_types::UserDataWithPass>;
+
+    fn does_user_exist(&self, email: &str) -> ResultFin<bool>;
+
+    fn create_user(
+        &self,
+        email: &str,
+        password: &str,
+    ) -> ResultFin<db_types::UserData>;
+
     //========== TASKS
     fn get_incomplete_tasks(&self) -> ResultFin<Vec<models::Item>>;
 
@@ -30,6 +50,110 @@ impl PgFinDb {
 }
 
 impl FinDb for PgFinDb {
+    fn get_user(&self, email: &str) -> ResultFin<db_types::UserData> {
+        // // table users
+        // let stmt = &format!(
+        //     "SELECT {} FROM {} WHERE email = $1",
+        //     &db_types::UserData::sql_fields(),
+        //     &db_types::UserData::sql_table(),
+        // );
+
+        // let rows = &self.conn.query(stmt, &[&email]).map_err(|err| {
+        //     lineError!(self.logger, err);
+        //     err
+        // })?;
+
+        // rows.iter()
+        //     .next()
+        //     .map(|row| {
+        //         db_types::UserData::from_postgres_row(row).map_err(|err| {
+        //             lineError!(self.logger, err);
+        //             FinError::DatabaseErr
+        //         })
+        //     })
+        //     .ok_or(FinError::DatabaseErr)?
+        unimplemented!()
+    }
+
+    fn get_user_with_pass(
+        &self,
+        email: &str,
+    ) -> ResultFin<db_types::UserDataWithPass> {
+        // // table users
+        // let stmt = &format!(
+        //     "SELECT {} FROM {} WHERE email = $1",
+        //     &db_types::UserDataWithPass::sql_fields(),
+        //     &db_types::UserDataWithPass::sql_table(),
+        // );
+
+        // let rows = &self.conn.query(stmt, &[&email]).map_err(|err| {
+        //     lineError!(self.logger, err);
+        //     err
+        // })?;
+
+        // rows.iter()
+        //     .next()
+        //     .map(|row| {
+        //         db_types::UserDataWithPass::from_postgres_row(row).map_err(
+        //             |err| {
+        //                 lineError!(self.logger, err);
+        //                 FinError::DatabaseErr
+        //             },
+        //         )
+        //     })
+        //     .ok_or(FinError::DatabaseErr)?
+        unimplemented!()
+    }
+
+    fn does_user_exist(&self, email: &str) -> ResultFin<bool> {
+        // // table users
+        // let stmt = &format!(
+        //     "SELECT 1 from {} where email=$1",
+        //     &db_types::UserData::sql_table(),
+        // );
+
+        // let rows = self.conn.query(stmt, &[&email]);
+
+        // let rows = rows.map_err(|err| {
+        //     lineError!(self.logger, err);
+        //     err
+        // })?;
+
+        // let ret = !rows.is_empty();
+        // Ok(ret)
+        unimplemented!()
+    }
+
+    fn create_user(
+        &self,
+        email: &str,
+        password: &str,
+    ) -> ResultFin<db_types::UserData> {
+        // let stmt = &format!(
+        //     "INSERT INTO {}
+        //     (email, password)
+        //     VALUES ($1, $2) RETURNING *",
+        //     &db_types::UserData::sql_table(),
+        // );
+
+        // let rows =
+        //     &self.conn.query(stmt, &[&email, &password]).map_err(|err| {
+        //         lineError!(self.logger, err);
+        //         err
+        //     })?;
+
+        // rows.iter()
+        //     .next()
+        //     .map(|row| {
+        //         db_types::UserData::from_postgres_row(row).map_err(|err| {
+        //             lineError!(self.logger, err);
+        //             FinError::DatabaseErr
+        //         })
+        //     })
+        //     .ok_or(FinError::DatabaseErr)?
+        unimplemented!()
+    }
+
     fn get_incomplete_tasks(&self) -> ResultFin<Vec<models::Item>> {
         let items: ResultFin<Vec<models::Item>> = self
             .conn

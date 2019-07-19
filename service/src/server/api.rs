@@ -6,3 +6,15 @@ use std::collections::HashMap;
 pub struct TasksResp {
     pub name: String,
 }
+
+#[derive(Deserialize)]
+pub struct LoginForm {
+    pub email: String,
+    pub password: String,
+}
+
+#[derive(Deserialize)]
+pub struct UserData {
+    pub id: i64,
+    pub email: String,
+}

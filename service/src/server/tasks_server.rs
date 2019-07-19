@@ -10,7 +10,7 @@ lazy_static! {
 }
 
 pub fn get_incomplete_tasks(
-    res_backend: Result<impl backend::Backend, warp::Rejection>,
+    res_backend: Result<impl backend::TasksBackend, warp::Rejection>,
 ) -> Result<impl warp::Reply, warp::Rejection> {
     let task_backend = res_backend?;
     let resp = task_backend.get_incomplete_tasks().map_err(|err| {
@@ -26,7 +26,7 @@ pub fn get_incomplete_tasks(
 }
 
 pub fn create_task(
-    res_backend: Result<impl backend::Backend, warp::Rejection>,
+    res_backend: Result<impl backend::TasksBackend, warp::Rejection>,
 ) -> Result<impl warp::Reply, warp::Rejection> {
     // let task_backend = res_backend?;
     // let resp = task_backend

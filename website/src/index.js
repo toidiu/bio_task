@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import App from "./App.vue";
+import Login from "./components/login-view/index.vue";
 import Task from "./components/task-view/index.vue";
 import PageNotFound from "./components/page-not-found/index.vue";
 import "./../node_modules/bulma/css/bulma.css";
@@ -13,6 +14,15 @@ const router = new VueRouter({
   routes: [
     {
       path: "/",
+      component: Login
+    },
+    {
+      path: "/login",
+      component: Login,
+      name: "login"
+    },
+    {
+      path: "/tasks",
       component: Task,
       name: "home"
     },

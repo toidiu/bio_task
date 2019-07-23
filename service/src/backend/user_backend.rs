@@ -10,12 +10,6 @@ pub trait UserBackend {
     ) -> ResultFin<data::UserDataWithPass>;
 
     fn does_user_exist(&self, email: &String) -> ResultFin<bool>;
-
-    fn create_user(
-        &self,
-        email: &String,
-        password: &String,
-    ) -> ResultFin<data::UserData>;
 }
 
 impl UserBackend {
@@ -48,13 +42,5 @@ impl<T: data::FinDb> UserBackend for DefaultUserBackend<T> {
 
     fn does_user_exist(&self, email: &String) -> ResultFin<bool> {
         self.db.does_user_exist(email)
-    }
-
-    fn create_user(
-        &self,
-        email: &String,
-        password: &String,
-    ) -> ResultFin<data::UserData> {
-        self.db.create_user(email, password)
     }
 }

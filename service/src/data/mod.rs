@@ -22,12 +22,6 @@ pub trait FinDb {
 
     fn does_user_exist(&self, email: &str) -> ResultFin<bool>;
 
-    fn create_user(
-        &self,
-        email: &str,
-        password: &str,
-    ) -> ResultFin<db_types::UserData>;
-
     //========== TASKS
     fn get_incomplete_tasks(&self) -> ResultFin<Vec<models::Item>>;
 
@@ -121,36 +115,6 @@ impl FinDb for PgFinDb {
 
         // let ret = !rows.is_empty();
         // Ok(ret)
-        unimplemented!()
-    }
-
-    fn create_user(
-        &self,
-        email: &str,
-        password: &str,
-    ) -> ResultFin<db_types::UserData> {
-        // let stmt = &format!(
-        //     "INSERT INTO {}
-        //     (email, password)
-        //     VALUES ($1, $2) RETURNING *",
-        //     &db_types::UserData::sql_table(),
-        // );
-
-        // let rows =
-        //     &self.conn.query(stmt, &[&email, &password]).map_err(|err| {
-        //         lineError!(self.logger, err);
-        //         err
-        //     })?;
-
-        // rows.iter()
-        //     .next()
-        //     .map(|row| {
-        //         db_types::UserData::from_postgres_row(row).map_err(|err| {
-        //             lineError!(self.logger, err);
-        //             FinError::DatabaseErr
-        //         })
-        //     })
-        //     .ok_or(FinError::DatabaseErr)?
         unimplemented!()
     }
 

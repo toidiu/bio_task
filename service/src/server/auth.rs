@@ -54,7 +54,7 @@ pub fn parse_sess(sess: &str) -> ResultFin<UserId> {
 
 //FIXME dont user expect
 pub fn resp_with_auth(
-    user_data: super::UserDataApi,
+    user_data: String,
     body: String,
     status: StatusCode,
 ) -> Result<Response<String>, warp::Rejection> {
@@ -70,7 +70,7 @@ pub fn resp_with_auth(
         .set_jti(String::from("session token"))
         .set_not_before(Utc::now())
         .set_subject(String::from("session"))
-        .set_claim(String::from("user_id"), json!(user_data.id))
+        .set_claim(String::from("user_id"), json!(user_data))
         // TODO use session key to prevent replay attack.. timestamp helps
         // .set_footer(String::from("key-id:gandalf1"))
         .build()

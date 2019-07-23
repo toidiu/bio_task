@@ -94,7 +94,6 @@ pub fn start_server() {
         .and(with_tasks_backend)
         .and_then(tasks_server::create_task);
     let task_api = get_incomplete_tasks.or(create_task);
-    // LOGIN===============
     // USERS===============
     let user_path = warp::path("users");
     let post_login = warp::post2()
@@ -103,17 +102,7 @@ pub fn start_server() {
         .and(warp::body::json())
         .and(with_user_backend)
         .and_then(user_server::login);
-    let post_logout = warp::post2()
-        .and(user_path)
-        .and(warp::path("logout"))
-        .and_then(user_server::logout);
-    let post_signup = warp::post2()
-        .and(user_path)
-        .and(warp::path("signup"))
-        .and(warp::body::json())
-        .and(with_user_backend)
-        .and_then(user_server::signup);
-    let user_api = post_login.or(post_logout).or(post_signup);
+    let user_api = post_login;
 
     // combine apis
     let api = task_api

@@ -9,7 +9,6 @@ pub struct TasksResp {
 
 #[derive(Deserialize)]
 pub struct LoginForm {
-    pub email: String,
     pub password: String,
 }
 

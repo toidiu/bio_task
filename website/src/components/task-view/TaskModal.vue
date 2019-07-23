@@ -3,7 +3,7 @@
     <div class="modal-background" v-on:click="closeModal"></div>
     <div class="modal-card">
       <div class="modal-card-head">
-        <p class="modal-card-title">hi</p>
+        <p class="modal-card-title">{{ modalTask }}</p>
         <button
           class="delete"
           aria-label="close"
@@ -47,7 +47,8 @@ export default Vue.extend({
       pageSize: 25,
       currentPage: 1,
       totalPages: 0,
-      modalActive: false
+      modalActive: true,
+      modalTask: {} as Object
     };
   },
   methods: {

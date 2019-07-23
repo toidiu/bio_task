@@ -14,17 +14,13 @@ const router = new VueRouter({
   routes: [
     {
       path: "/",
-      component: Login
+      component: Task,
+      name: "home"
     },
     {
       path: "/login",
       component: Login,
       name: "login"
-    },
-    {
-      path: "/tasks",
-      component: Task,
-      name: "home"
     },
     {
       path: "/project",

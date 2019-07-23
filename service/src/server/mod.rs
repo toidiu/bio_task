@@ -66,6 +66,15 @@ pub fn start_server() {
         })
     };
 
+    // AUTH
+    let with_auth = warp::cookie::optional(&auth::SESS_COOKIE_NAME).and_then(
+        |opt_sess: Option<String>| match opt_sess {
+            Some(sess) => auth::parse_sess(&sess)
+                .map_err(|err| warp::reject::custom(FinError::NotLoggedIn)),
+            None => Err(warp::reject::custom(FinError::NotLoggedIn)),
+        },
+    );
+
     // PROJECTS===============
     // let project_path = warp::path("projects");
     // // GET -> projects
@@ -83,6 +92,7 @@ pub fn start_server() {
     let get_incomplete_tasks = warp::get2()
         .and(task_path)
         .and(warp::path("incomplete"))
+        .and(with_auth)
         .and(warp::path::end())
         .and(with_tasks_backend)
         .and_then(tasks_server::get_incomplete_tasks);

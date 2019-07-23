@@ -17,15 +17,11 @@ struct Sess {
 }
 
 #[derive(Deserialize, Debug)]
-pub struct UserId(i64);
+pub struct UserId(String);
 
 impl UserId {
-    pub fn new(v: i64) -> Self {
+    pub fn new(v: String) -> Self {
         UserId(v)
-    }
-
-    pub fn get_user_id(&self) -> &i64 {
-        &self.0
     }
 }
 

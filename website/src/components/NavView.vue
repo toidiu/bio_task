@@ -15,9 +15,12 @@
     </div>
 
     <div class="level-right">
-      <!-- <router-link to="/"> -->
-      <!--   <a class="navbar-item">home</a> -->
-      <!-- </router-link> -->
+      <router-link to="/">
+        <a class="navbar-item">tasks</a>
+      </router-link>
+      <router-link to="/login">
+        <a class="navbar-item">login</a>
+      </router-link>
     </div>
   </nav>
 </template>

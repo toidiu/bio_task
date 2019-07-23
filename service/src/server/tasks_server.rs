@@ -10,6 +10,7 @@ lazy_static! {
 }
 
 pub fn get_incomplete_tasks(
+    _user_id: super::auth::UserId,
     res_backend: Result<impl backend::TasksBackend, warp::Rejection>,
 ) -> Result<impl warp::Reply, warp::Rejection> {
     let task_backend = res_backend?;

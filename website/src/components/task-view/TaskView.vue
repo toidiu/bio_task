@@ -38,6 +38,7 @@
               </a>
             </th>
           </template>
+          <th></th>
         </tr>
 
         <template v-for="(task, tidx) in sortedTasksState">
@@ -62,6 +63,11 @@
                 </div>
               </td>
             </template>
+            <td>
+              <button class="button is-text" @click="editTask(task)">
+                edit
+              </button>
+            </td>
           </tr>
         </template>
       </table>
@@ -99,6 +105,7 @@ export default Vue.extend({
   data: function() {
     return {
       columns: [
+        //["Item Id", "itemId"],
         ["Title", "title"],
         ["Deadline", "deadlineDate"],
         ["Description", "description"],
@@ -125,6 +132,9 @@ export default Vue.extend({
       }
       this.currentSort = s;
     },
+    editTask: function(t) {
+      console.log(t);
+    },
     nextPage: function() {
       if (this.currentPage * this.pageSize < this.tasksState.length)
         this.currentPage++;
@@ -136,7 +146,6 @@ export default Vue.extend({
       return (v / 5) * 100 + "%";
     },
     getSortImgUrl: function(s) {
-      console.log(s);
       if (this.currentSort === s) {
         if (this.currentSortDir === "asc") {
           return require("./../../../static/images/sort-up.svg");
@@ -148,7 +157,6 @@ export default Vue.extend({
       }
     },
     getSortTextColor: function(s) {
-      console.log(s);
       if (this.currentSort === s) {
         return "active";
       } else {

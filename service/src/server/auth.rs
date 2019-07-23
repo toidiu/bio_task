@@ -19,12 +19,6 @@ struct Sess {
 #[derive(Deserialize, Debug)]
 pub struct UserId(String);
 
-impl UserId {
-    pub fn new(v: String) -> Self {
-        UserId(v)
-    }
-}
-
 pub fn parse_sess(sess: &str) -> ResultFin<UserId> {
     let res_verified_token = paseto::tokens::validate_local_token(
         sess.to_string(),

@@ -19,6 +19,8 @@
         @calc-investment-event="calcInvestmentHandler"
       />
     </template>
+
+    <task-modal />
   </div>
 </template>
 
@@ -27,6 +29,7 @@ import NavView from "../NavView.vue";
 import LoaderView from "../LoaderView.vue";
 import ErrorsView from "../ErrorsView.vue";
 import TaskView from "./TaskView.vue";
+import TaskModal from "./TaskModal.vue";
 import router from "../../index.js";
 import { Task } from "./models";
 import { Ticker, Action } from "../../data/models";
@@ -37,7 +40,8 @@ export default Vue.extend({
     NavView,
     ErrorsView,
     LoaderView,
-    TaskView
+    TaskView,
+    TaskModal
   },
   data() {
     return {

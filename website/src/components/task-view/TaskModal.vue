@@ -11,10 +11,13 @@
         ></button>
       </div>
       <section class="modal-card-body">
-        {{ modalTask.description }}
+        <p>{{ modalTask.statusKey }}</p>
+        <p>{{ modalTask.deadlineDate }}</p>
+        <p>{{ modalTask.description }}</p>
       </section>
       <footer class="modal-card-foot">
-        {{ modalTask.itemId }}
+        <button class="button is-primary is-outlined">submit</button>
+        <button class="button is-danger is-outlined">cancel</button>
       </footer>
     </div>
   </div>

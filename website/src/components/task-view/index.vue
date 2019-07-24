@@ -13,14 +13,8 @@
     </template>
 
     <template>
-      <task-view
-        v-if="tasksState != null"
-        :tasks-state="tasksState"
-        @calc-investment-event="calcInvestmentHandler"
-      />
+      <task-view v-if="tasksState != null" :tasks-state="tasksState" />
     </template>
-
-    <task-modal />
   </div>
 </template>
 
@@ -29,7 +23,6 @@ import NavView from "../NavView.vue";
 import LoaderView from "../LoaderView.vue";
 import ErrorsView from "../ErrorsView.vue";
 import TaskView from "./TaskView.vue";
-import TaskModal from "./TaskModal.vue";
 import router from "../../index.js";
 import { Task } from "./models";
 import { Ticker, Action } from "../../data/models";
@@ -40,8 +33,7 @@ export default Vue.extend({
     NavView,
     ErrorsView,
     LoaderView,
-    TaskView,
-    TaskModal
+    TaskView
   },
   data() {
     return {
@@ -73,7 +65,6 @@ export default Vue.extend({
         });
       this.isLoading = false;
     },
-    calcInvestmentHandler(amount: Number) {},
     clearErrors() {
       this.errors = [];
     }

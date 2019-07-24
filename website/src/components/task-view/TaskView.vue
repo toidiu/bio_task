@@ -64,9 +64,12 @@
               </td>
             </template>
             <td>
-              <button class="button is-text" @click="editTask(task)">
-                edit
-              </button>
+              <a @click="editTask(task)">
+                <img
+                  class="edit-icon"
+                  src="./../../../static/images/edit.svg"
+                />
+              </a>
             </td>
           </tr>
         </template>
@@ -87,6 +90,10 @@
         Next
       </button>
     </div>
+    <task-modal
+      :modal-task="modalTask"
+      @close-modal-event="closeModalHandler"
+    />
   </div>
 </template>
 
@@ -94,10 +101,12 @@
 import { TaskResp } from "./models";
 import Vue from "vue";
 import ScrollView from "./ScrollView.vue";
+import TaskModal from "./TaskModal.vue";
 
 export default Vue.extend({
   components: {
-    ScrollView
+    ScrollView,
+    TaskModal
   },
   props: {
     tasksState: Array
@@ -118,13 +127,18 @@ export default Vue.extend({
       value: 3,
       pageSize: 25,
       currentPage: 1,
-      totalPages: 0
+      totalPages: 0,
+      modalActive: true,
+      modalTask: null
     };
   },
   created: function() {
     this.totalPages = Math.ceil(this.tasksState.length / this.pageSize);
   },
   methods: {
+    closeModalHandler: function(s) {
+      this.modalTask = null;
+    },
     sort: function(s) {
       //if s == current sort, reverse
       if (s === this.currentSort) {
@@ -133,7 +147,7 @@ export default Vue.extend({
       this.currentSort = s;
     },
     editTask: function(t) {
-      console.log(t);
+      this.modalTask = t;
     },
     nextPage: function() {
       if (this.currentPage * this.pageSize < this.tasksState.length)
@@ -185,10 +199,12 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
+.edit-icon {
+  height: 15px;
+}
 .progress-wrapper {
   position: relative;
 }
-
 .progress-value {
   position: absolute;
   top: 0;
